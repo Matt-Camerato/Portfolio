@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { CameraProvider } from "../context/CameraContext";
 import { FocusProvider } from "../context/FocusContext";

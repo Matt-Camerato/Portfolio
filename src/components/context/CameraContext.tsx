@@ -26,7 +26,7 @@ export function CameraProvider({ children }: { children: ReactNode }) {
         maxAzimuthAngle={Math.PI / 3}
         minDistance={1.8}
         maxDistance={1.9}
-        target={new THREE.Vector3(-2, 2.2, -1.5)}
+        target={new THREE.Vector3(-2, 2, -1.5)}
       />
     </CameraContext.Provider>
   );

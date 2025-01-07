@@ -9,6 +9,9 @@ import { useOverlay } from "../../context/OverlayContext";
 import { ColorPalette } from "../../../utils/colors";
 import { DissolveMaterial } from "../../../utils/materials";
 
+import { PerspectiveCamera } from "@react-three/drei";
+import { RenderTexture } from "@react-three/drei";
+
 //position and rotation of resume on desk
 const DEFAULT_POSITION = new THREE.Vector3(-2, 1.05, -2.6);
 const DEFAULT_ROTATION = new THREE.Euler(-Math.PI / 2, 0, 0.3);
@@ -97,8 +100,18 @@ export function Resume() {
           <meshToonMaterial color={ColorPalette.White} />
         </mesh>
       </Select>
-      <mesh position={[0, 0, 0.001]} material={dissolveMaterial}>
+      <mesh position={[0, 0, 0.001]}>
         <planeGeometry args={[0.4, 0.55]} />
+        <meshStandardMaterial>
+          <RenderTexture attach="map">
+            <color attach="background" args={["white"]} />
+            <PerspectiveCamera makeDefault position={[0, 0, 1]} />
+            <ambientLight intensity={1} color={"#ea8dad"} />
+            <mesh material={dissolveMaterial}>
+              <planeGeometry args={[2.03, 0.95]} />
+            </mesh>
+          </RenderTexture>
+        </meshStandardMaterial>
       </mesh>
     </group>
   );

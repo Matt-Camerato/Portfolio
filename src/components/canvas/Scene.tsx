@@ -12,7 +12,7 @@ export function Scene() {
         marginTop: "64px",
       }}
     >
-      <Canvas camera={{ fov: 75 }} shadows>
+      <Canvas camera={{ position: [0, 2, 1.5], fov: 75 }} shadows>
         <CameraProvider>
           <FocusProvider>
             <SceneContent />

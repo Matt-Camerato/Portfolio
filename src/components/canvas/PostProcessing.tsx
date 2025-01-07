@@ -13,7 +13,7 @@ export const PostProcessing = () => {
       if (child instanceof Mesh) {
         if (
           (child.name !== "" || child.parent?.name !== "") &&
-          child.material.name !== "transparent"
+          !child.material?.name?.includes("transparent")
         ) {
           setSelectedObjects((prev) => [...prev, child]);
         }

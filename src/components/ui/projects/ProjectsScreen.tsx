@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Html } from "@react-three/drei";
-import { Vector3 } from "three";
+import { Html, RenderTexture } from "@react-three/drei";
+import { PerspectiveCamera, Vector3 } from "three";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import ProjectsPage from "./ProjectsPage";
 import ProjectPage from "./ProjectPage";

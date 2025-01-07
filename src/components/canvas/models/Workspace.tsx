@@ -15,8 +15,11 @@ export function Workspace() {
 
         child.castShadow = true;
 
-        const baseColor =
-          "#" + child.material.color?.getHexString() || "#ffffff";
+        var baseColor = "#" + child.material.color?.getHexString() || "#ffffff";
+
+        if (child.name.includes("floor")) {
+          baseColor = "#888888";
+        }
 
         child.material = createToonMaterial(baseColor);
       }

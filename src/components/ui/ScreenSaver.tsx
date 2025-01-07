@@ -170,8 +170,8 @@ export const MatrixScreenSaver = ({
   const SCREEN_SIZE = new THREE.Vector2(42, 23.5);
   const COLUMN_COUNT = 25;
   const CHARS_PER_COLUMN = 12;
-  const MIN_SPEED = 0.1;
-  const MAX_SPEED = 0.3;
+  const MIN_SPEED = 0.05;
+  const MAX_SPEED = 0.2;
 
   const columnsRef = useRef<Column[]>([]);
   const groupRefs = useRef<(THREE.Group | null)[]>([]);

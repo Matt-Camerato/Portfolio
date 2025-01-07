@@ -15,7 +15,7 @@ const DEFAULT_ROTATION = new THREE.Euler(-1, 1.2, 0.95);
 export function Envelope() {
   const { isHovered, setIsHovered, pulseIntensity, interactionHandlers } =
     useInteraction();
-  const { isFocused, setFocus, setCanClose } = useFocus();
+  const { isFocused, setFocus } = useFocus();
   const { camera } = useThree();
   const { isOpen, setActions, setShowContactForm } = useOverlay();
 
@@ -64,7 +64,6 @@ export function Envelope() {
       paperRef.current
     ) {
       setEnvelopeOpen(true);
-      setCanClose(false);
 
       gsap.to(flapRef.current.rotation, {
         x: 0,
@@ -89,7 +88,6 @@ export function Envelope() {
         delay: 1,
         ease: "power2.inOut",
         onComplete: () => {
-          setCanClose(true);
           setShowContactForm(true);
         },
       });

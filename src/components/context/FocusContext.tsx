@@ -23,7 +23,6 @@ interface FocusContextType {
     canRotate: boolean
   ) => void;
   focusedObject: THREE.Object3D | null;
-  setCanClose: (canClose: boolean) => void;
   isPulsing: boolean;
 }
 
@@ -42,7 +41,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
     rotation: THREE.Euler;
     canRotate: boolean;
   } | null>(null);
-  const [canClose, setCanClose] = useState(true);
 
   const setFocus = (
     object: THREE.Object3D,
@@ -100,54 +98,51 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
   const handleClose = () => {
     setFocusValues((currentFocusValues) => {
-      setCanClose((currentCanClose) => {
-        if (currentFocusValues && currentCanClose) {
-          setIsOpen(false);
+      if (currentFocusValues) {
+        setIsOpen(false);
 
-          pulseTimerRef.current = pulseIntervalRef.current;
+        pulseTimerRef.current = pulseIntervalRef.current;
 
-          if (currentFocusValues.object.name.includes("Monitor")) {
-            gsap.to(camera.position, {
-              x: currentFocusValues.position.x,
-              y: currentFocusValues.position.y,
-              z: currentFocusValues.position.z,
-              duration: 1,
-              ease: "power2.inOut",
-            });
-            gsap.to(camera.rotation, {
-              x: currentFocusValues.rotation.x,
-              y: currentFocusValues.rotation.y,
-              z: currentFocusValues.rotation.z,
-              duration: 1,
-              ease: "power2.inOut",
-              onComplete: () => {
-                setFocusValues(null);
-                setEnabled(true);
-              },
-            });
-          } else {
-            gsap.to(currentFocusValues.object.rotation, {
-              x: currentFocusValues.rotation.x,
-              y: currentFocusValues.rotation.y,
-              z: currentFocusValues.rotation.z,
-              duration: 1,
-              ease: "power2.inOut",
-            });
-            gsap.to(currentFocusValues.object.position, {
-              x: currentFocusValues.position.x,
-              y: currentFocusValues.position.y,
-              z: currentFocusValues.position.z,
-              duration: 1,
-              ease: "power2.inOut",
-              onComplete: () => {
-                setFocusValues(null);
-                setEnabled(true);
-              },
-            });
-          }
+        if (currentFocusValues.object.name.includes("Monitor")) {
+          gsap.to(camera.position, {
+            x: currentFocusValues.position.x,
+            y: currentFocusValues.position.y,
+            z: currentFocusValues.position.z,
+            duration: 1,
+            ease: "power2.inOut",
+          });
+          gsap.to(camera.rotation, {
+            x: currentFocusValues.rotation.x,
+            y: currentFocusValues.rotation.y,
+            z: currentFocusValues.rotation.z,
+            duration: 1,
+            ease: "power2.inOut",
+            onComplete: () => {
+              setFocusValues(null);
+              setEnabled(true);
+            },
+          });
+        } else {
+          gsap.to(currentFocusValues.object.rotation, {
+            x: currentFocusValues.rotation.x,
+            y: currentFocusValues.rotation.y,
+            z: currentFocusValues.rotation.z,
+            duration: 1,
+            ease: "power2.inOut",
+          });
+          gsap.to(currentFocusValues.object.position, {
+            x: currentFocusValues.position.x,
+            y: currentFocusValues.position.y,
+            z: currentFocusValues.position.z,
+            duration: 1,
+            ease: "power2.inOut",
+            onComplete: () => {
+              setFocusValues(null);
+              setEnabled(true);
+            },
+          });
         }
-        return currentCanClose;
-      });
+      }
       return currentFocusValues;
     });
   };
@@ -178,7 +173,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         isFocused: focusValues !== null,
         setFocus,
         focusedObject: focusValues?.object || null,
-        setCanClose,
         isPulsing,
       }}
     >

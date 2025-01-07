@@ -16,7 +16,7 @@ body {
   background: #222222;
   border-bottom: 2px solid #000000;
   backdrop-filter: blur(10px);
-  z-index: 1000;
+  z-index: 10;
   user-select: none;
 }
 
@@ -37,6 +37,10 @@ body {
   text-shadow: -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
     2px 2px 0 #000000;
   text-decoration: none;
+
+  &:hover {
+    color: #e6db74;
+  }
 }
 
 .nav-container {
@@ -91,7 +95,7 @@ body {
     transition: opacity 0.2s;
 
     &:hover {
-      opacity: 0.7;
+      color: #e6db74;
     }
   }
 }
@@ -118,6 +122,86 @@ body {
     &.open {
       opacity: 1;
       visibility: visible;
+    }
+  }
+}
+
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #222222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  text-shadow: -3px -3px 0 #000000, 3px -3px 0 #000000, -3px 3px 0 #000000,
+    3px 3px 0 #000000;
+  user-select: none;
+
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    color: white;
+
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 15px;
+      background-color: #444444;
+      border-radius: 15px;
+      border: 3px solid #000000;
+      overflow: hidden;
+
+      .loading-progress {
+        height: 100%;
+        border-radius: 2px;
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 1.2rem;
+      text-shadow: -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
+        2px 2px 0 #000000;
+    }
+  }
+
+  .entrance-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    color: white;
+    text-align: center;
+
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    .enter-button {
+      padding: 15px 80px;
+      border: 3px solid #000000;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: black;
+      cursor: pointer;
     }
   }
 }

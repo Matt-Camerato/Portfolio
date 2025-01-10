@@ -4,185 +4,327 @@ import {
   useState,
   ReactNode,
   useEffect,
-  useRef,
 } from "react";
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
-import { useCamera } from "./CameraContext";
-import { useOverlay } from "./OverlayContext";
-import { Plane } from "@react-three/drei";
-import { overlayMaterial } from "../../utils/materials";
+
+type FocusTransitionType = "CAMERA_TO_OBJECT" | "OBJECT_TO_CAMERA";
+
+interface FocusTransition {
+  type: FocusTransitionType;
+  targetOffset: THREE.Vector3;
+}
+
+interface FocusableConfig {
+  id: string;
+  object: THREE.Object3D;
+  defaultPosition: THREE.Vector3;
+  defaultRotation: THREE.Euler;
+  transition: FocusTransition;
+  canRotate: boolean;
+  onFocusStart?: () => void;
+  onFocusEnd?: () => void;
+  actions?: Map<string, () => void>;
+}
 
 interface FocusContextType {
-  isFocused: boolean;
-  setFocus: (
-    object: THREE.Object3D,
-    position: THREE.Vector3,
-    rotation: THREE.Euler,
-    canRotate: boolean
-  ) => void;
-  focusedObject: THREE.Object3D | null;
-  isPulsing: boolean;
+  focusConfig: FocusableConfig | null;
+  actions: Map<string, () => void>;
+  setCamera: (camera: THREE.Camera) => void;
+  cameraEnabled: boolean;
+  showOverlay: boolean;
+  canInteract: boolean;
+  setCanInteract: (canInteract: boolean) => void;
+  registerFocusable: (config: FocusableConfig) => void;
+  unregisterFocusable: (id: string) => void;
+  setFocus: (id: string) => void;
 }
 
 const FocusContext = createContext<FocusContextType | undefined>(undefined);
 
 export function FocusProvider({ children }: { children: ReactNode }) {
-  const { camera } = useThree();
-  const { setEnabled } = useCamera();
-  const { isOpen, setIsOpen, setActions } = useOverlay();
+  const [focusableObjects, setFocusableObjects] = useState<
+    Map<string, FocusableConfig>
+  >(new Map());
+  const [actions, setActions] = useState<Map<string, () => void>>(new Map());
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [canInteract, setCanInteract] = useState(true);
 
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [focusValues, setFocusValues] = useState<{
-    object: THREE.Object3D;
-    position: THREE.Vector3;
-    rotation: THREE.Euler;
-    canRotate: boolean;
+  const [currentFocus, setCurrentFocus] = useState<{
+    config: FocusableConfig;
+    previousCameraPosition?: THREE.Vector3;
+    previousCameraRotation?: THREE.Euler;
   } | null>(null);
 
-  const setFocus = (
-    object: THREE.Object3D,
-    position: THREE.Vector3,
-    rotation: THREE.Euler,
-    canRotate: boolean
-  ) => {
-    setEnabled(false);
-    setFocusValues({ object, position, rotation, canRotate });
-    setIsOpen(true);
-    setActions({ close: handleClose });
-  };
+  const [camera, setCamera] = useState<THREE.Camera | null>(null);
+  const [cameraEnabled, setCameraEnabled] = useState(true);
 
-  const handleDragStart = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    if (!focusValues || !focusValues.canRotate) return;
+  const registerFocusable = (config: FocusableConfig) => {
+    setFocusableObjects((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(config.id, config);
+      return newMap;
+    });
 
-    setIsDragging(true);
-  };
-
-  const handleDragMove = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    if (!isDragging || !focusValues || !focusValues.canRotate) return;
-
-    const deltaX = e.movementX / 500;
-    const deltaY = e.movementY / 500;
-
-    const cameraRight = new THREE.Vector3(1, 0, 0).applyQuaternion(
-      camera.quaternion
-    );
-    const cameraUp = new THREE.Vector3(0, 1, 0).applyQuaternion(
-      camera.quaternion
-    );
-    const rightRotation = new THREE.Quaternion().setFromAxisAngle(
-      cameraUp,
-      deltaX
-    );
-    const upRotation = new THREE.Quaternion().setFromAxisAngle(
-      cameraRight,
-      deltaY
-    );
-    const combinedRotation = rightRotation.multiply(upRotation);
-
-    focusValues.object.quaternion.multiplyQuaternions(
-      combinedRotation,
-      focusValues.object.quaternion
-    );
-  };
-
-  const handleDragEnd = (e: ThreeEvent<PointerEvent>) => {
-    e.stopPropagation();
-    if (!focusValues || !focusValues.canRotate) return;
-    setIsDragging(false);
-  };
-
-  const handleClose = () => {
-    setFocusValues((currentFocusValues) => {
-      if (currentFocusValues) {
-        setIsOpen(false);
-
-        pulseTimerRef.current = pulseIntervalRef.current;
-
-        if (currentFocusValues.object.name.includes("Monitor")) {
-          gsap.to(camera.position, {
-            x: currentFocusValues.position.x,
-            y: currentFocusValues.position.y,
-            z: currentFocusValues.position.z,
-            duration: 1,
-            ease: "power2.inOut",
-          });
-          gsap.to(camera.rotation, {
-            x: currentFocusValues.rotation.x,
-            y: currentFocusValues.rotation.y,
-            z: currentFocusValues.rotation.z,
-            duration: 1,
-            ease: "power2.inOut",
-            onComplete: () => {
-              setFocusValues(null);
-              setEnabled(true);
-            },
-          });
-        } else {
-          gsap.to(currentFocusValues.object.rotation, {
-            x: currentFocusValues.rotation.x,
-            y: currentFocusValues.rotation.y,
-            z: currentFocusValues.rotation.z,
-            duration: 1,
-            ease: "power2.inOut",
-          });
-          gsap.to(currentFocusValues.object.position, {
-            x: currentFocusValues.position.x,
-            y: currentFocusValues.position.y,
-            z: currentFocusValues.position.z,
-            duration: 1,
-            ease: "power2.inOut",
-            onComplete: () => {
-              setFocusValues(null);
-              setEnabled(true);
-            },
+    //add actions if they contain the word "focus"
+    if (config.actions) {
+      config.actions.forEach((_, key) => {
+        const action = () => setFocus(config.id);
+        if (key.includes("focus")) {
+          setActions((prev) => {
+            const newActions = new Map(prev);
+            newActions.set(key, action);
+            return newActions;
           });
         }
-      }
-      return currentFocusValues;
+      });
+    }
+  };
+
+  const unregisterFocusable = (id: string) => {
+    setFocusableObjects((prev) => {
+      const newMap = new Map(prev);
+      newMap.delete(id);
+      return newMap;
     });
   };
 
-  //pulse all interactable objects every pulse interval
-  const pulseTimerRef = useRef(180);
-  const pulseIntervalRef = useRef(window.innerWidth < 768 ? 1800 : 3600);
-  const [isPulsing, setIsPulsing] = useState(true);
-  useFrame(() => {
-    if (focusValues) {
-      if (isPulsing) setIsPulsing(false);
-      return;
+  const handleFocusTransition = (config: FocusableConfig) => {
+    setCameraEnabled(false);
+
+    if (config.transition.type === "OBJECT_TO_CAMERA") {
+      const targetDistance = config.transition.targetOffset.z;
+      const cameraDirection = camera!.getWorldDirection(new THREE.Vector3());
+      const targetPosition = new THREE.Vector3().addVectors(
+        camera!.position,
+        cameraDirection.multiplyScalar(targetDistance)
+      );
+      const targetRotation = camera!.rotation.clone();
+
+      gsap.to(config.object.position, {
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+      gsap.to(config.object.rotation, {
+        x: targetRotation.x,
+        y: targetRotation.y,
+        z: targetRotation.z,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          setCanInteract(true);
+          config.onFocusStart?.();
+          setShowOverlay(true);
+        },
+      });
+    } else {
+      const targetPosition = config.object.position
+        .clone()
+        .add(config.transition.targetOffset || new THREE.Vector3());
+
+      gsap.to(camera!.position, {
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+
+      gsap.to(camera!.rotation, {
+        x: config.object.rotation.x,
+        y: config.object.rotation.y,
+        z: config.object.rotation.z,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          setCanInteract(true);
+          config.onFocusStart?.();
+          setShowOverlay(true);
+        },
+      });
+    }
+  };
+
+  const setFocus = (id: string) => {
+    const config = focusableObjects.get(id);
+    if (!config) return;
+
+    setCanInteract(false);
+
+    if (currentFocus && currentFocus.config.id !== id) {
+      //if already focused, handle transition after clearing current focus
+      handleClearFocus(config);
+    } else if (!currentFocus) {
+      //if not focused, transition to new focus
+      handleFocusTransition(config);
     }
 
-    pulseTimerRef.current--;
-    if (isPulsing && pulseTimerRef.current <= 0) {
-      setIsPulsing(false);
-      pulseTimerRef.current = pulseIntervalRef.current;
-    } else if (!isPulsing && pulseTimerRef.current <= 0) {
-      setIsPulsing(true);
-      pulseTimerRef.current = 180;
+    //update current focus
+    if (
+      config.transition.type === "CAMERA_TO_OBJECT" &&
+      !currentFocus?.previousCameraPosition
+    ) {
+      const previousCameraPosition = camera!.position.clone();
+      const previousCameraRotation = camera!.rotation.clone();
+      setCurrentFocus({
+        config,
+        previousCameraPosition,
+        previousCameraRotation,
+      });
+    } else {
+      setCurrentFocus({ ...currentFocus, config });
     }
-  });
+
+    //add object actions if they exist
+    if (config.actions) {
+      setActions((prev) => {
+        const newActions = new Map(prev);
+        config.actions!.forEach((value, key) => {
+          newActions.set(key, value);
+        });
+        return newActions;
+      });
+    }
+  };
+
+  const handleClearFocus = (newConfig: FocusableConfig | null = null) => {
+    if (!currentFocus) return;
+
+    const { config } = currentFocus;
+
+    //call onFocusEnd callback and close overlay
+    config.onFocusEnd?.();
+    setShowOverlay(false);
+
+    //clear any object actions
+    if (config.actions) {
+      setActions((prev) => {
+        //if no newConfig, clear all actions
+        if (!newConfig) {
+          return new Map();
+        }
+
+        const newActions = new Map(prev);
+        config.actions!.forEach((_, key) => {
+          newActions.delete(key);
+        });
+        return newActions;
+      });
+    }
+
+    const skipAnimation =
+      config.transition.type === "CAMERA_TO_OBJECT" &&
+      newConfig?.transition.type === "CAMERA_TO_OBJECT";
+
+    if (config.transition.type === "OBJECT_TO_CAMERA") {
+      //return object to default position
+      gsap.to(config.object.position, {
+        x: config.defaultPosition.x,
+        y: config.defaultPosition.y,
+        z: config.defaultPosition.z,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+
+      gsap.to(config.object.rotation, {
+        x: config.defaultRotation.x,
+        y: config.defaultRotation.y,
+        z: config.defaultRotation.z,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          if (!newConfig) {
+            setCameraEnabled(true);
+          } else if (!skipAnimation) {
+            handleFocusTransition(newConfig);
+          }
+        },
+      });
+    } else {
+      //return camera to its previous position
+      if (
+        currentFocus.previousCameraPosition &&
+        currentFocus.previousCameraRotation
+      ) {
+        gsap.to(camera!.position, {
+          x: currentFocus.previousCameraPosition.x,
+          y: currentFocus.previousCameraPosition.y,
+          z: currentFocus.previousCameraPosition.z,
+          duration: 1,
+          ease: "power2.inOut",
+        });
+
+        gsap.to(camera!.rotation, {
+          x: currentFocus.previousCameraRotation.x,
+          y: currentFocus.previousCameraRotation.y,
+          z: currentFocus.previousCameraRotation.z,
+          duration: 1,
+          ease: "power2.inOut",
+          onComplete: () => {
+            if (!newConfig) {
+              setCameraEnabled(true);
+            } else if (!skipAnimation) {
+              handleFocusTransition(newConfig);
+            }
+          },
+        });
+      }
+    }
+
+    //clear current focus
+    if (!newConfig) {
+      setCurrentFocus(null);
+    } else if (skipAnimation) {
+      handleFocusTransition(newConfig);
+    }
+  };
+
+  const clearFocus = () => handleClearFocus();
+
+  useEffect(() => {
+    if (currentFocus) {
+      setActions((prev) => {
+        const newActions = new Map(prev);
+        newActions.set("close", () => clearFocus());
+        return newActions;
+      });
+    }
+
+    //refresh all focus actions
+    focusableObjects.forEach((config) => {
+      if (config.actions) {
+        config.actions.forEach((_, key) => {
+          if (key.includes("focus")) {
+            const action = () => setFocus(config.id);
+            setActions((prev) => {
+              const newActions = new Map(prev);
+              newActions.set(key, action);
+              return newActions;
+            });
+          }
+        });
+      }
+    });
+  }, [currentFocus]);
 
   return (
     <FocusContext.Provider
       value={{
-        isFocused: focusValues !== null,
+        focusConfig: currentFocus?.config || null,
+        actions,
+        setCamera,
+        cameraEnabled,
+        showOverlay,
+        canInteract,
+        setCanInteract,
+        registerFocusable,
+        unregisterFocusable,
         setFocus,
-        focusedObject: focusValues?.object || null,
-        isPulsing,
       }}
     >
-      <Overlay
-        isOpen={isOpen && !focusValues?.object.name.includes("Monitor")}
-        camera={camera}
-        handleDragStart={handleDragStart}
-        handleDragMove={handleDragMove}
-        handleDragEnd={handleDragEnd}
-      />
       {children}
     </FocusContext.Provider>
   );
@@ -194,56 +336,4 @@ export function useFocus() {
     throw new Error("useFocus must be used within a FocusProvider");
   }
   return context;
-}
-
-function Overlay({
-  isOpen,
-  camera,
-  handleDragStart,
-  handleDragMove,
-  handleDragEnd,
-}: {
-  isOpen: boolean;
-  camera: THREE.Camera;
-  handleDragStart: (e: ThreeEvent<PointerEvent>) => void;
-  handleDragMove: (e: ThreeEvent<PointerEvent>) => void;
-  handleDragEnd: (e: ThreeEvent<PointerEvent>) => void;
-}) {
-  const planeRef = useRef<THREE.Mesh>(null);
-
-  useEffect(() => {
-    if (!planeRef.current || !isOpen) return;
-
-    const planeDistance = 0.75;
-    const height =
-      2 *
-      Math.tan(
-        THREE.MathUtils.degToRad((camera as THREE.PerspectiveCamera).fov / 2)
-      ) *
-      planeDistance;
-    const width = height * (camera as THREE.PerspectiveCamera).aspect;
-    planeRef.current.scale.set(width, height, 1);
-
-    const planeVector = new THREE.Vector3(0, 0, -planeDistance);
-    planeVector.applyQuaternion(camera.quaternion);
-    planeVector.add(camera.position);
-
-    planeRef.current.position.copy(planeVector);
-    planeRef.current.quaternion.copy(camera.quaternion);
-  }, [isOpen]);
-
-  return (
-    isOpen && (
-      <Plane
-        ref={planeRef}
-        args={[1, 1]}
-        material={overlayMaterial}
-        renderOrder={-1}
-        onPointerDown={handleDragStart}
-        onPointerMove={handleDragMove}
-        onPointerUp={handleDragEnd}
-        onPointerLeave={handleDragEnd}
-      />
-    )
-  );
 }

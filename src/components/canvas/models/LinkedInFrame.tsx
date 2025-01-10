@@ -8,7 +8,7 @@ import { useFocus } from "../../context/FocusContext";
 export function LinkedInFrame() {
   const { scene } = useGLTF("/models/linkedInFrame.glb");
   const { isHovered, pulseIntensity, interactionHandlers } = useInteraction();
-  const { isFocused } = useFocus();
+  const { focusConfig } = useFocus();
 
   useEffect(() => {
     scene.traverse((child) => {
@@ -31,7 +31,7 @@ export function LinkedInFrame() {
       <primitive
         object={scene}
         {...interactionHandlers}
-        {...(!isFocused && { onClick: handleClick })}
+        {...(!focusConfig && { onClick: handleClick })}
       />
     </Select>
   );

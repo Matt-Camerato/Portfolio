@@ -11,7 +11,7 @@ export const Environment = () => {
         intensity={15}
         angle={1.4}
         penumbra={0.1}
-        color={"#ea8dad"}
+        color={ColorPalette.White}
       />
     </>
   );

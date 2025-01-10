@@ -12,7 +12,9 @@ export const PostProcessing = () => {
     scene.traverse((child) => {
       if (child instanceof Mesh) {
         if (
-          (child.name !== "" || child.parent?.name !== "") &&
+          (child.name !== "" ||
+            child.parent?.name !== "" ||
+            child.parent?.parent?.name !== "") &&
           !child.material?.name?.includes("transparent")
         ) {
           setSelectedObjects((prev) => [...prev, child]);

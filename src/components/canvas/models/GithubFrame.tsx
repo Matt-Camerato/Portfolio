@@ -8,7 +8,7 @@ import { useFocus } from "../../context/FocusContext";
 export function GithubFrame() {
   const { scene } = useGLTF("/models/githubFrame.glb");
   const { isHovered, pulseIntensity, interactionHandlers } = useInteraction();
-  const { isFocused } = useFocus();
+  const { focusConfig } = useFocus();
 
   useEffect(() => {
     scene.traverse((child) => {
@@ -28,7 +28,7 @@ export function GithubFrame() {
       <primitive
         object={scene}
         {...interactionHandlers}
-        {...(!isFocused && { onClick: handleClick })}
+        {...(!focusConfig && { onClick: handleClick })}
       />
     </Select>
   );

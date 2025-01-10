@@ -1,21 +1,19 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { OverlayProvider } from "./components/context/OverlayContext";
+import { FocusProvider } from "./components/context/FocusContext";
 import { LoadingScreen } from "./components/ui/LoadingScreen";
 import { Navbar } from "./components/ui/Navbar";
 import { Scene } from "./components/canvas/Scene";
-import { Overlay } from "./components/ui/Overlay";
 
 function App() {
   return (
     <>
       <LoadingScreen />
 
-      <OverlayProvider>
+      <FocusProvider>
         <Navbar />
         <Scene />
-        <Overlay />
-      </OverlayProvider>
+      </FocusProvider>
 
       {/* Vercel Analytics */}
       <Analytics />

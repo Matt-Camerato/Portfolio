@@ -3,9 +3,8 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import { ThreeEvent, useThree } from "@react-three/fiber";
 import { Select } from "@react-three/postprocessing";
-import { useInteraction } from "../../../hooks/useInteraction";
+import { useFocusable } from "../../../hooks/useFocusable";
 import { useFocus } from "../../context/FocusContext";
-import { useOverlay } from "../../context/OverlayContext";
 import { ColorPalette } from "../../../utils/colors";
 import Confetti from "../../../effects/Confetti";
 
@@ -46,13 +45,28 @@ const CUBE_COLORS = {
 const DRAG_THRESHOLD = 10;
 
 export const RubiksCube = () => {
-  const { isHovered, setIsHovered, pulseIntensity, interactionHandlers } =
-    useInteraction();
-  const { isFocused, setFocus, focusedObject } = useFocus();
+  const { focusConfig } = useFocus();
+  const {
+    objectRef,
+    isHovered,
+    isSelfFocused,
+    pulseIntensity,
+    focusableProps,
+  } = useFocusable({
+    id: "rubiksCube",
+    defaultPosition: DEFAULT_POSITION,
+    defaultRotation: DEFAULT_ROTATION,
+    transition: {
+      type: "OBJECT_TO_CAMERA",
+      targetOffset: new THREE.Vector3(0, 0, 0.5),
+    },
+    canRotate: true,
+    onFocusStart: () => null,
+    onFocusEnd: () => null,
+    actions: new Map([["shuffle", () => shuffle()]]),
+  });
   const { camera } = useThree();
-  const { isOpen, setActions } = useOverlay();
 
-  const groupRef = useRef<THREE.Group>(null);
   const confettiGroupRef = useRef<THREE.Group>(null);
 
   const generateCubies = (): Cubie[] => {
@@ -101,11 +115,11 @@ export const RubiksCube = () => {
   const [confettiTime, setConfettiTime] = useState<number>(0);
 
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
-    if (!groupRef.current) return;
+    if (!objectRef.current) return;
     e.stopPropagation();
 
     //get the local position of the click
-    const localPoint = groupRef.current.worldToLocal(e.point.clone());
+    const localPoint = objectRef.current.worldToLocal(e.point.clone());
 
     //get the face that was clicked
     const clickedFace = getClickedFace(localPoint);
@@ -136,7 +150,7 @@ export const RubiksCube = () => {
 
   const onPointerUp = (e: ThreeEvent<PointerEvent>) => {
     if (
-      !groupRef.current ||
+      !objectRef.current ||
       !dragState.clickedFace ||
       !dragState.intersectionPoint ||
       isRotating
@@ -177,7 +191,7 @@ export const RubiksCube = () => {
     //transform drag vector to cube space
     const localDrag = projectedDrag
       .clone()
-      .applyQuaternion(groupRef.current.quaternion.clone().invert());
+      .applyQuaternion(objectRef.current.quaternion.clone().invert());
 
     const { axis, clockwise } = getDragRotation(
       dragState.clickedFace,
@@ -338,7 +352,7 @@ export const RubiksCube = () => {
     rotationAxis: THREE.Vector3,
     clockwise: boolean
   ): Promise<void> => {
-    if (!groupRef.current) return Promise.resolve();
+    if (!objectRef.current) return Promise.resolve();
     setIsRotating(true);
 
     return new Promise((resolve) => {
@@ -348,7 +362,7 @@ export const RubiksCube = () => {
       //get meshes of cubies to rotate
       const meshes = cubiesToRotate
         .map((cubie) =>
-          groupRef.current!.children.find((child) =>
+          objectRef.current!.children.find((child) =>
             child.position.equals(cubie.position)
           )
         )
@@ -356,7 +370,7 @@ export const RubiksCube = () => {
 
       //create temp group for rotation
       const rotationGroup = new THREE.Group();
-      groupRef.current!.add(rotationGroup);
+      objectRef.current!.add(rotationGroup);
 
       //add cubies to group while preserving world pos
       meshes.forEach((mesh) => {
@@ -386,12 +400,12 @@ export const RubiksCube = () => {
           //return cubies to main group while preserving world pos
           meshes.forEach((mesh) => {
             const worldPos = mesh.getWorldPosition(new THREE.Vector3());
-            groupRef.current!.attach(mesh);
-            mesh.position.copy(groupRef.current!.worldToLocal(worldPos));
+            objectRef.current!.attach(mesh);
+            mesh.position.copy(objectRef.current!.worldToLocal(worldPos));
           });
 
           //remove rotation group
-          groupRef.current!.remove(rotationGroup);
+          objectRef.current!.remove(rotationGroup);
 
           resolve();
           setIsRotating(false);
@@ -413,7 +427,7 @@ export const RubiksCube = () => {
       if (!mesh) return cubie;
 
       const newWorldPos = mesh.getWorldPosition(new THREE.Vector3());
-      const newLocalPos = groupRef.current!.worldToLocal(newWorldPos);
+      const newLocalPos = objectRef.current!.worldToLocal(newWorldPos);
       const worldQuaternion = mesh.getWorldQuaternion(new THREE.Quaternion());
 
       //round position values
@@ -560,28 +574,6 @@ export const RubiksCube = () => {
     setIsShuffled(true);
   };
 
-  const handleClick = () => {
-    if (!groupRef.current) return;
-
-    setIsHovered(false);
-    setFocus(groupRef.current, DEFAULT_POSITION, DEFAULT_ROTATION, true);
-    setActions((prev) => ({ ...prev, shuffle }));
-
-    const cameraDirection = camera.getWorldDirection(new THREE.Vector3());
-    const targetPosition = new THREE.Vector3().addVectors(
-      camera.position,
-      cameraDirection.multiplyScalar(0.5)
-    );
-
-    gsap.to(groupRef.current.position, {
-      x: targetPosition.x,
-      y: targetPosition.y,
-      z: targetPosition.z,
-      duration: 1,
-      ease: "power2.inOut",
-    });
-  };
-
   //shuffle cube if randomMoves > 0
   useEffect(() => {
     if (isRotating) return;
@@ -595,16 +587,14 @@ export const RubiksCube = () => {
 
   //stop shuffling when cube is not focused
   useEffect(() => {
-    if (!isOpen && focusedObject === groupRef.current) {
-      setRandomMoves(0);
-    }
-  }, [isOpen]);
+    if (!focusConfig && randomMoves > 0) setRandomMoves(0);
+  }, [focusConfig]);
 
   useEffect(() => {
-    if (!groupRef.current || !confettiGroupRef.current) return;
+    if (!objectRef.current || !confettiGroupRef.current) return;
 
     if (confettiTime > 0) {
-      confettiGroupRef.current.position.copy(groupRef.current.position);
+      confettiGroupRef.current.position.copy(objectRef.current.position);
       setConfettiTime((prev) => prev - 1);
     }
   }, [confettiTime]);
@@ -613,19 +603,14 @@ export const RubiksCube = () => {
     <>
       <Select enabled={isHovered || pulseIntensity > 0}>
         <group
-          ref={groupRef}
-          name="RubiksCube"
+          name="rubiksCube"
           position={DEFAULT_POSITION}
           rotation={DEFAULT_ROTATION}
-          {...interactionHandlers}
-          {...(isFocused
-            ? {
-                onPointerDown: onPointerDown,
-                onPointerUp: onPointerUp,
-              }
-            : {
-                onClick: handleClick,
-              })}
+          {...focusableProps}
+          {...(isSelfFocused && {
+            onPointerDown: onPointerDown,
+            onPointerUp: onPointerUp,
+          })}
         >
           {cubies.map((cubie, index) => (
             <Cubie key={index} {...cubie} />
@@ -659,7 +644,7 @@ const Cubie = ({ position, faces }: Cubie) => {
   ];
 
   return (
-    <mesh position={position}>
+    <mesh name="cubie" position={position}>
       <boxGeometry args={[CUBIE_SIZE, CUBIE_SIZE, CUBIE_SIZE]} />
       {materials.map((material, index) => (
         <primitive key={index} object={material} attach={`material-${index}`} />

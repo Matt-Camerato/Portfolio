@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useOverlay } from "../context/OverlayContext";
+import { useFocus } from "../context/FocusContext";
+import "../../styles/Navbar.scss";
 
 export function Navbar() {
+  const { actions, canInteract } = useFocus();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { actions, isOpen } = useOverlay();
 
   return (
     <nav className="navbar">
@@ -26,27 +27,31 @@ export function Navbar() {
           <div className={`nav-links ${isMenuOpen ? "open" : ""}`}>
             <div
               onClick={() => {
-                if (isOpen) return;
-                setIsMenuOpen(false);
-                actions?.about?.();
+                //check if actions map
+                if (actions.has("focus-monitor2") && canInteract) {
+                  setIsMenuOpen(false);
+                  actions.get("focus-monitor2")!();
+                }
               }}
             >
               About
             </div>
             <div
               onClick={() => {
-                if (isOpen) return;
-                setIsMenuOpen(false);
-                actions?.projects?.();
+                if (actions.has("focus-monitor1") && canInteract) {
+                  setIsMenuOpen(false);
+                  actions.get("focus-monitor1")!();
+                }
               }}
             >
               Projects
             </div>
             <div
               onClick={() => {
-                if (isOpen) return;
-                setIsMenuOpen(false);
-                actions?.contact?.();
+                if (actions.has("focus-envelope") && canInteract) {
+                  setIsMenuOpen(false);
+                  actions.get("focus-envelope")!();
+                }
               }}
             >
               Contact

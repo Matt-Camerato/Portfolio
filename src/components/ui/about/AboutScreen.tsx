@@ -51,7 +51,7 @@ export function AboutScreen({ isActive }: { isActive: boolean }) {
       position={[0, 0.355, 0.001]}
       rotation={[0, 0, 0]}
       scale={[0.0275, 0.0275, 0.0275]}
-      renderOrder={1}
+      renderOrder={10}
     >
       <div className="about-screen">
         <img className="toolbar" src="/images/about/toolbar.png" />

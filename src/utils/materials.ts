@@ -24,13 +24,6 @@ export const createTransparentMaterial = (color: string, opacity: number) => {
   return material;
 };
 
-export const overlayMaterial = new THREE.MeshBasicMaterial({
-  color: 0x000000,
-  transparent: true,
-  opacity: 0.6,
-  depthWrite: false,
-});
-
 export function DissolveMaterial(
   texture: THREE.Texture,
   borderColor: string,

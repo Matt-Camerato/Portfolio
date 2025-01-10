@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useFocus } from "../../context/FocusContext";
 import { useFocusable } from "../../../hooks/useFocusable";
 import { ColorPalette } from "../../../utils/colors";
+import { ContactForm } from "../../ui/ContactForm";
 
 //position and rotation of envelope on desk
 const DEFAULT_POSITION = new THREE.Vector3(-2.945, 1.174, -1.87);
@@ -15,8 +16,8 @@ export function Envelope() {
   const { setCanInteract } = useFocus();
 
   const envelopeRef = useRef<THREE.Group>(null);
-  const flapRef = useRef<THREE.Mesh>(null);
-  const paperRef = useRef<THREE.Mesh>(null);
+  const flapRef = useRef<THREE.Group>(null);
+  const paperRef = useRef<THREE.Group>(null);
 
   const handleEnvelopeOpen = () => {
     if (
@@ -26,10 +27,9 @@ export function Envelope() {
       paperRef.current
     ) {
       setCanInteract(false);
-      setEnvelopeOpen(true);
 
       gsap.to(flapRef.current.rotation, {
-        x: 0,
+        x: -Math.PI,
         duration: 1,
         ease: "power2.inOut",
       });
@@ -50,6 +50,7 @@ export function Envelope() {
         delay: 1,
         ease: "power2.inOut",
         onComplete: () => {
+          setEnvelopeOpen(true);
           setCanInteract(true);
         },
       });
@@ -73,7 +74,7 @@ export function Envelope() {
     });
 
     gsap.to(flapRef.current!.rotation, {
-      x: Math.PI,
+      x: 0,
       duration: 0.2,
       ease: "power2.inOut",
       delay: 0.6,
@@ -194,43 +195,59 @@ export function Envelope() {
           </mesh>
 
           {/* Envelope flap */}
-          <mesh
+          <group
+            name="envelope-flap"
             ref={flapRef}
             position={[0, 0.13, 0.006]}
-            rotation={[Math.PI, 0, 0]}
+            rotation={[0, 0, 0]}
           >
-            <bufferGeometry>
-              <bufferAttribute
-                attach="attributes-position"
-                array={
-                  new Float32Array([
-                    -0.2,
+            {/* Convert to a very thin box instead of */}
+            <mesh rotation={[Math.PI, 0, 0]}>
+              <polyhedronGeometry
+                args={[
+                  // Vertices array [x,y,z, x,y,z, ...]
+                  [
+                    -2,
                     0,
-                    0, // Bottom left
-                    0.2,
+                    0, // Back Left
+                    2,
                     0,
-                    0, // Bottom right
+                    0, // Back center
                     0,
-                    0.15,
-                    0, // Top center
-                  ])
-                }
-                count={3}
-                itemSize={3}
+                    4,
+                    0, // Back right
+                    2,
+                    0,
+                    -0.001, // Back bottom right
+                    -2,
+                    0,
+                    -0.001, // Back bottom left
+                    0,
+                    4,
+                    -0.001, // Back top center
+                  ],
+                  // Faces array (indices to form triangles)
+                  [
+                    0,
+                    1,
+                    2, // Front face
+                    3,
+                    4,
+                    5,
+                  ],
+                  // Radius (use 1 since we defined actual coordinates)
+                  0.2,
+                  // Detail level (0 for no subdivision)
+                  0,
+                ]}
               />
-            </bufferGeometry>
-            <meshToonMaterial
-              color={ColorPalette.BrightWhite}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
+              <meshToonMaterial color={ColorPalette.White} />
+            </mesh>
+          </group>
         </group>
 
         {/* Paper with contact form */}
-        <mesh ref={paperRef} name="ContactForm" position={[0, 0, 0.001]}>
-          <planeGeometry args={[0.35, 0.25]} />
-          <meshToonMaterial color={ColorPalette.White} />
-        </mesh>
+        <ContactForm paperRef={paperRef} envelopeOpen={envelopeOpen} />
       </group>
     </Select>
   );

@@ -261,54 +261,66 @@
       gap: 150px;
 
       .gaming-header {
-        text-align: center;
-        width: 700px;
-        margin: 50px auto 0 auto;
         position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #222222;
+        padding: 250px 0;
+        margin-bottom: 250px;
 
-        .header-overlay {
-          height: 200px;
+        .controller-blueprint {
+          position: absolute;
+          width: 120%;
+          height: 100%;
           display: flex;
-          flex-direction: column;
           justify-content: center;
           align-items: center;
-          gap: 20px;
-          padding: 80px 0 150px 0;
+          margin-top: 190px;
+
+          svg {
+            width: 1800px;
+            height: 1800px;
+            filter: drop-shadow(0 0 15px rgba(133, 198, 220, 0.3));
+          }
+        }
+
+        .title-container {
+          z-index: 2;
+          text-align: center;
+          margin-top: -110px;
 
           h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 0;
+            margin: 0 0 -10px 0;
+            font-size: 155px;
+            letter-spacing: -5px;
+            color: white;
           }
 
           p {
-            font-size: 24px;
-            line-height: 1.5;
             margin: 0;
-            opacity: 0.8;
+            font-size: 24px;
+            opacity: 0.9;
+            color: white;
           }
         }
 
-        img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          object-fit: cover;
-          z-index: -1;
-        }
-
         .scroll-indicator {
+          position: absolute;
+          bottom: -150px;
           font-size: 60px;
-          margin-top: 50px;
           animation: bounce 2s infinite;
+          z-index: 2;
         }
       }
 
       .favorites-section {
         h2 {
-          font-size: 36px;
+          font-size: 42px;
           font-weight: 700;
+          color: #e6db74;
           margin: 0 0 40px 0;
           text-align: center;
         }
@@ -316,16 +328,22 @@
         .favorites-carousel {
           position: relative;
           width: 100%;
-          height: 600px;
+          height: 650px;
           display: flex;
           align-items: center;
           justify-content: center;
+
+          .carousel-container {
+            position: relative;
+            width: 1000px;
+            height: 650px;
+          }
 
           .carousel-button {
             background: none;
             border: none;
             color: white;
-            font-size: 44px;
+            font-size: 64px;
             cursor: pointer;
             padding: 20px;
             transition: transform 0.3s;
@@ -333,14 +351,14 @@
 
             &:hover {
               transform: scale(1.2);
-              color: #e6db74;
+              color: #8c6bc8;
             }
           }
 
           .carousel-item {
-            position: relative;
-            width: 900px;
-            height: 550px;
+            position: absolute;
+            width: 100%;
+            height: 100%;
             border: 4px solid black;
             border-radius: 15px;
             overflow: hidden;
@@ -363,12 +381,13 @@
               transition: transform 0.3s;
 
               h3 {
-                font-size: 28px;
+                font-size: 32px;
                 margin: 0 0 10px 0;
+                color: #e6db74;
               }
 
               p {
-                font-size: 18px;
+                font-size: 22px;
                 margin: 0;
                 opacity: 0.8;
                 line-height: 1.5;
@@ -389,11 +408,14 @@
       }
 
       .current-section {
+        margin-top: 50px;
+
         h2 {
-          font-size: 36px;
+          font-size: 42px;
           font-weight: 700;
-          margin: 0 0 40px 0;
+          margin: 0 0 50px 0;
           text-align: center;
+          color: #86b42b;
         }
 
         .current-grid {
@@ -402,8 +424,8 @@
           gap: 60px;
 
           .game-card {
-            width: 250px;
-            height: 250px;
+            width: 300px;
+            height: 300px;
             position: relative;
             perspective: 1000px;
             cursor: pointer;
@@ -451,12 +473,12 @@
               text-align: center;
 
               h3 {
-                font-size: 24px;
+                font-size: 28px;
                 margin: 0 0 10px 0;
               }
 
               p {
-                font-size: 16px;
+                font-size: 20px;
                 margin: 0;
                 opacity: 0.8;
               }
@@ -466,8 +488,11 @@
       }
 
       .library-section {
+        margin-top: 50px;
+        width: 100%;
+
         h2 {
-          font-size: 36px;
+          font-size: 42px;
           font-weight: 700;
           margin: 0 0 40px 0;
           text-align: center;
@@ -494,7 +519,6 @@
             }
 
             &.active {
-              background: #e6db74;
               color: black;
             }
           }
@@ -502,7 +526,7 @@
 
         .library-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 
           gap: 30px;
           padding: 0 50px;
@@ -521,17 +545,21 @@
             }
 
             h3 {
-              font-size: 24px;
+              font-size: 26px;
+              margin: 0 0 5px 0;
+            }
+
+            h4 {
+              opacity: 0.7;
+              font-size: 18px;
+              font-weight: 500;
               margin: 0 0 15px 0;
             }
 
-            .rating {
-              margin-bottom: 15px;
-
-              svg {
-                font-size: 18px;
-                margin-right: 5px;
-              }
+            p {
+              opacity: 0.6;
+              font-size: 18px;
+              margin: 0 0 25px 0;
             }
 
             .genres {
@@ -540,10 +568,12 @@
               gap: 10px;
 
               .genre-tag {
-                background: #444444;
-                padding: 5px 10px;
+                color: #222222;
+                padding: 8px 10px;
                 border-radius: 4px;
                 font-size: 14px;
+                font-weight: 500;
+                opacity: 0.8;
               }
             }
           }
@@ -554,54 +584,74 @@
     .interests-page {
       height: 100%;
       width: 80%;
-      margin-top: 100px;
-      padding: 250px 0 200px 0;
+      margin-top: 350px;
+      padding: 200px 0;
       display: flex;
       flex-direction: column;
       gap: 150px;
 
       .interests-header {
-        text-align: center;
-        width: 600px;
-        margin: 0 auto;
         position: relative;
+        width: 100%;
+        height: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #222222;
+        gap: 50px;
+        padding: 100px 0;
+        margin-bottom: 180px;
 
-        .header-overlay {
-          height: 200px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          gap: 20px;
-          padding: 240px 50px 100px 0;
+        .floating-icons-container {
+          width: 250px;
+          .floating-icon {
+            svg {
+              font-size: 40px;
+              filter: drop-shadow(3px 3px 0px rgba(0, 0, 0, 0.3));
+            }
+          }
+        }
+
+        .title-container {
+          position: relative;
+          z-index: 2;
+          text-align: center;
+          padding: 40px;
 
           h1 {
-            font-size: 48px;
-            font-weight: 700;
+            font-size: 140px;
             margin: 0;
+            color: white;
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
           }
 
           p {
             font-size: 24px;
-            line-height: 1.5;
-            margin: 0;
-            opacity: 0.8;
+            opacity: 0.9;
+            color: white;
+          }
+
+          .title-underline {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(
+              90deg,
+              #8c6bc8 20%,
+              #56adbc 40%,
+              #c4265e 60%,
+              #86b42b 80%
+            );
+            margin: 20px auto 50px auto;
+            max-width: 600px;
           }
         }
 
-        img {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 110%;
-          object-fit: cover;
-          z-index: -1;
-        }
-
         .scroll-indicator {
+          position: absolute;
+          bottom: -100px;
           font-size: 60px;
-          margin-top: 200px;
           animation: bounce 2s infinite;
+          z-index: 2;
         }
       }
 
@@ -1093,11 +1143,23 @@
       }
 
       .misc-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h2 {
+          font-size: 42px;
+          margin-bottom: 30px;
+          text-align: center;
+        }
+
         .interests-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 30px;
           margin-bottom: 200px;
+          width: 80%;
 
           .interest-card {
             background: #333333;

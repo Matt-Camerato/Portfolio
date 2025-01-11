@@ -8,9 +8,140 @@ import {
   faBook,
   faDumbbell,
   faUtensils,
+  faPlane,
+  faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPalette } from "../../../utils/colors";
 import BookShelf from "./BookShelf";
+
+const instruments = [
+  {
+    name: "Piano",
+    icon: "piano.png",
+    description: "My primary and favorite instrument",
+  },
+  {
+    name: "Drums",
+    icon: "drums.png",
+    description:
+      "Started playing percussion in middle school and was section leader in high school",
+  },
+  {
+    name: "Bass",
+    icon: "bass.png",
+    description: "Picked up to play in a band I started with friends",
+  },
+  {
+    name: "Mallet Percussion",
+    icon: "mallets.png",
+    description:
+      "One of the few percussionists who knew how to read the music in high school",
+  },
+  {
+    name: "Timpani",
+    icon: "timpani.png",
+    description:
+      "Played in high school and was my instrument of choice in college",
+  },
+  {
+    name: "Otamatone",
+    icon: "otamatone.png",
+    description:
+      "A weird but fun Japanese instrument that acts as a voice synthesizer",
+  },
+  {
+    name: "Accordion",
+    icon: "accordion.png",
+    description:
+      "Regularly played in a local pit band and learned this once for the play 'Cabaret'",
+  },
+];
+
+const books = {
+  current: {
+    title: "A Storm of Swords",
+    author: "George R.R. Martin",
+    progress: 0.5,
+    series: "A Song of Ice and Fire",
+    seriesProgress: "Book 3 of 5",
+  },
+  upcoming: ["A Court of Thorns and Roses", "Outlander", "The Witcher"],
+};
+
+const destinations = [
+  {
+    name: "Kyoto",
+    image: "kyoto.jpg",
+    description:
+      "Kyoto is a city in Japan known for its traditional architecture and gardens.",
+  },
+  {
+    name: "Tokyo",
+    image: "tokyo.jpg",
+    description:
+      "Tokyo is the capital city of Japan, known for its modern architecture and technology.",
+  },
+  {
+    name: "Osaka",
+    image: "osaka.jpg",
+    description:
+      "Osaka is a city in Japan known for its delicious street food and nightlife.",
+  },
+];
+
+const foods = [
+  {
+    name: "Okonomiyaki",
+    icon: "okonomiyaki.png",
+    description: "Savory pancake filled with a variety of ingredients",
+  },
+  {
+    name: "Yakitori",
+    icon: "yakitori.png",
+    description: "Grilled chicken skewers",
+  },
+  {
+    name: "Takoyaki",
+    icon: "takoyaki.png",
+    description: "Octopus balls",
+  },
+  {
+    name: "Taiyaki",
+    icon: "taiyaki.png",
+    description: "Fish-shaped cake filled with sweet red bean paste",
+  },
+  {
+    name: "Tonkatsu",
+    icon: "tonkatsu.png",
+    description: "Deep-fried pork cutlet",
+  },
+  {
+    name: "Karaage",
+    icon: "karaage.png",
+    description: "Deep-fried chicken",
+  },
+];
+
+const miscInterests = [
+  {
+    title: "Cooking",
+    icon: faUtensils,
+    color: ColorPalette.Blue,
+    description: "Love trying new recipes, especially Asian cuisine",
+  },
+  {
+    title: "Working Out",
+    icon: faDumbbell,
+    color: ColorPalette.Green,
+    description: "Regular fitness routine to stay healthy and energized",
+  },
+  {
+    title: "Rubik's Cubes",
+    icon: faCube,
+    color: ColorPalette.Orange,
+    description: "Large collection of puzzles in many shapes and sizes",
+  },
+];
 
 const InterestsPage = () => {
   const [musicRef, musicInView] = useInView({ triggerOnce: true });
@@ -41,17 +172,125 @@ const InterestsPage = () => {
   return (
     <div className="interests-page">
       {/* Header */}
-      <motion.div
-        className="interests-header"
-        initial={{ opacity: 0, y: 50, scale: 0.8 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="header-overlay">
+      <motion.div className="interests-header">
+        <motion.div
+          className="floating-icons-container"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 4, delay: 1 }}
+        >
+          {[
+            { icon: faMusic, color: ColorPalette.Purple },
+            { icon: faBook, color: ColorPalette.Blue },
+            { icon: faPlane, color: ColorPalette.Pink },
+            { icon: faDumbbell, color: ColorPalette.Green },
+            { icon: faUtensils, color: ColorPalette.Orange },
+            { icon: faCube, color: ColorPalette.Yellow },
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              className="floating-icon"
+              initial={{
+                x: (index % 3) * 50 - 25,
+                y: Math.floor(index / 3) * 50 - 50,
+              }}
+              animate={{
+                x: [
+                  (index % 3) * 50 - 25,
+                  Math.cos(index * 0.7) * (index % 2 ? 50 : 30),
+                  (index % 3) * 50 - 25,
+                ],
+                y: [
+                  Math.floor(index / 3) * 50 - 50,
+                  Math.sin(index * 0.7) * (index % 2 ? 30 : 50),
+                  Math.floor(index / 3) * 50 - 50,
+                ],
+                rotate: [0, index % 2 ? -360 : 360, 0],
+              }}
+              transition={{
+                duration: 15 + index * 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <FontAwesomeIcon
+                icon={item.icon}
+                style={{
+                  color: item.color,
+                  fontSize: `${35 + (index % 3) * 10}px`,
+                }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          className="title-container"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
           <h1>Interests</h1>
-          <p>Entertainment and other interests.</p>
-        </div>
-        <img src="/images/about/interests/tv.png" alt="Interests" />
+          <motion.div
+            className="title-underline"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          />
+          <p>Some of the things I currently enjoy.</p>
+        </motion.div>
+
+        <motion.div
+          className="floating-icons-container"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 4, delay: 1 }}
+        >
+          {[
+            { icon: faMusic, color: ColorPalette.Purple },
+            { icon: faBook, color: ColorPalette.Blue },
+            { icon: faPlane, color: ColorPalette.Pink },
+            { icon: faDumbbell, color: ColorPalette.Green },
+            { icon: faUtensils, color: ColorPalette.Orange },
+            { icon: faCube, color: ColorPalette.Yellow },
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              className="floating-icon"
+              initial={{
+                x: ((index % 3) - 1) * 50,
+                y: Math.floor(index / 3) * 50 - 75,
+              }}
+              animate={{
+                x: [
+                  ((index % 3) - 1) * 50,
+                  Math.sin(index * 0.5) * (index % 2 ? 60 : 40),
+                  ((index % 3) - 1) * 50,
+                ],
+                y: [
+                  Math.floor(index / 3) * 50 - 75,
+                  Math.cos(index * 0.5) * (index % 2 ? 40 : 60),
+                  Math.floor(index / 3) * 50 - 75,
+                ],
+                rotate: [0, index % 2 ? 360 : -360, 0],
+              }}
+              transition={{
+                duration: 12 + index * 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <FontAwesomeIcon
+                icon={item.icon}
+                style={{
+                  color: item.color,
+                  fontSize: `${35 + (index % 3) * 10}px`,
+                }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
         <FontAwesomeIcon
           icon={faChevronDown}
           className="scroll-indicator"
@@ -65,7 +304,7 @@ const InterestsPage = () => {
         className="music-section"
         initial={{ opacity: 0, scale: 0.8, y: 30 }}
         animate={musicInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-        transition={{ delay: 0.5, duration: 1, type: "spring", bounce: 0.5 }}
+        transition={{ duration: 1, type: "spring", bounce: 0.5 }}
       >
         <div className="music-content">
           <div className="piano-keys">
@@ -404,7 +643,7 @@ const InterestsPage = () => {
               className="interest-card"
               initial={{ opacity: 0, y: 30 }}
               animate={miscInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: index * 0.2 }}
+              transition={{ delay: 0.3 + index * 0.2 }}
             >
               <FontAwesomeIcon
                 icon={interest.icon}
@@ -421,132 +660,3 @@ const InterestsPage = () => {
 };
 
 export default InterestsPage;
-
-const instruments = [
-  {
-    name: "Piano",
-    icon: "piano.png",
-    description: "My primary and favorite instrument",
-  },
-  {
-    name: "Drums",
-    icon: "drums.png",
-    description:
-      "Started playing percussion in middle school and was section leader in high school",
-  },
-  {
-    name: "Bass",
-    icon: "bass.png",
-    description: "Picked up to play in a band I started with friends",
-  },
-  {
-    name: "Mallet Percussion",
-    icon: "mallets.png",
-    description:
-      "One of the few percussionists who knew how to read music in high school",
-  },
-  {
-    name: "Timpani",
-    icon: "timpani.png",
-    description:
-      "Played in high school and was my instrument of choice in college",
-  },
-  {
-    name: "Otamatone",
-    icon: "otamatone.png",
-    description:
-      "A weird but fun Japanese instrument that acts as a voice synthesizer",
-  },
-  {
-    name: "Accordion",
-    icon: "accordion.png",
-    description:
-      "Regularly played in a local pit band and learned this once for the play 'Cabaret'",
-  },
-];
-
-const books = {
-  current: {
-    title: "A Storm of Swords",
-    author: "George R.R. Martin",
-    progress: 0.5,
-    series: "A Song of Ice and Fire",
-    seriesProgress: "Book 3 of 5",
-  },
-  upcoming: ["A Court of Thorns and Roses", "Outlander", "The Witcher"],
-};
-
-const destinations = [
-  {
-    name: "Kyoto",
-    image: "kyoto.jpg",
-    description:
-      "Kyoto is a city in Japan known for its traditional architecture and gardens.",
-  },
-  {
-    name: "Tokyo",
-    image: "tokyo.jpg",
-    description:
-      "Tokyo is the capital city of Japan, known for its modern architecture and technology.",
-  },
-  {
-    name: "Osaka",
-    image: "osaka.jpg",
-    description:
-      "Osaka is a city in Japan known for its delicious street food and nightlife.",
-  },
-];
-
-const foods = [
-  {
-    name: "Okonomiyaki",
-    icon: "okonomiyaki.png",
-    description: "Savory pancake filled with a variety of ingredients",
-  },
-  {
-    name: "Yakitori",
-    icon: "yakitori.png",
-    description: "Grilled chicken skewers",
-  },
-  {
-    name: "Takoyaki",
-    icon: "takoyaki.png",
-    description: "Octopus balls",
-  },
-  {
-    name: "Taiyaki",
-    icon: "taiyaki.png",
-    description: "Fish-shaped cake filled with sweet red bean paste",
-  },
-  {
-    name: "Tonkatsu",
-    icon: "tonkatsu.png",
-    description: "Deep-fried pork cutlet",
-  },
-  {
-    name: "Karaage",
-    icon: "karaage.png",
-    description: "Deep-fried chicken",
-  },
-];
-
-const miscInterests = [
-  {
-    title: "Cooking",
-    icon: faUtensils,
-    color: ColorPalette.Blue,
-    description: "Love trying new recipes a",
-  },
-  {
-    title: "Working Out",
-    icon: faDumbbell,
-    color: ColorPalette.Green,
-    description: "Regular fitness routine to stay healthy and energized",
-  },
-  {
-    title: "Rubik's Cubes",
-    icon: faCube,
-    color: ColorPalette.Orange,
-    description: "Collection of various twisty puzzles",
-  },
-];

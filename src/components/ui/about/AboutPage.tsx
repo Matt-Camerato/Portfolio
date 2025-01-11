@@ -16,6 +16,61 @@ import { useInView } from "react-intersection-observer";
 import { ColorPalette } from "../../../utils/colors";
 import Carousel from "./Carousel";
 
+const currentItems = [
+  {
+    title: "Playing",
+    icon: faGamepad,
+    color: ColorPalette.Green,
+    text: "Black Ops 6, Marvel Rivals, and more!",
+  },
+  {
+    title: "Learning",
+    icon: faHeart,
+    color: ColorPalette.Pink,
+    text: "Three.js, React Three Fiber, Socket.io",
+  },
+  {
+    title: "Working On",
+    icon: faCode,
+    color: ColorPalette.Yellow,
+    text: "FunBoredGames.com\nand this portfolio!",
+  },
+];
+
+const funFacts = [
+  {
+    text: "Based in New Hampshire, USA",
+    icon: faMapMarkerAlt,
+    color: ColorPalette.Blue,
+  },
+  { text: "Favorite Game: Minecraft", icon: faCube, color: ColorPalette.Green },
+  {
+    text: "Love playing piano & making music",
+    icon: faMusic,
+    color: ColorPalette.Purple,
+  },
+  {
+    text: "Always have a candle lit",
+    icon: faFireFlameSimple,
+    color: ColorPalette.Orange,
+  },
+  {
+    text: "Dream of traveling to Japan",
+    icon: faPlane,
+    color: ColorPalette.Indigo,
+  },
+  {
+    text: "Favorite Show: Game of Thrones",
+    icon: faCrown,
+    color: ColorPalette.Yellow,
+  },
+];
+
+const navButtons = [
+  { text: "Gaming", page: "gaming", color: ColorPalette.Blue },
+  { text: "Interests", page: "interests", color: ColorPalette.Orange },
+];
+
 interface AboutPageProps {
   setPage: (page: string) => void;
 }
@@ -64,49 +119,33 @@ const AboutPage = ({ setPage }: AboutPageProps) => {
         />
       </motion.div>
 
-      <motion.div
-        ref={currentRef}
-        className="current-section"
-        initial={{ opacity: 0, scale: 0.5, y: 30 }}
-        animate={currentInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-        transition={{ duration: 1.5, type: "spring", bounce: 0.5 }}
-      >
+      <motion.div ref={currentRef} className="current-section">
         <h2>Currently...</h2>
         <div className="current-items">
-          <div className="current-item">
-            <FontAwesomeIcon
-              icon={faGamepad}
-              style={{ color: ColorPalette.Green }}
-            />
-            <h3>Playing</h3>
-            <p>Black Ops 6, Marvel Rivals, and more!</p>
-          </div>
-          <div className="current-item">
-            <FontAwesomeIcon
-              icon={faHeart}
-              style={{ color: ColorPalette.Pink }}
-            />
-            <h3>Learning</h3>
-            <p>Three.js, React Three Fiber, Socket.io</p>
-          </div>
-          <div className="current-item">
-            <FontAwesomeIcon
-              icon={faCode}
-              style={{ color: ColorPalette.Yellow }}
-            />
-            <h3>Working On</h3>
-            <p>FunBoredGames.com</p>
-            <p>and this portfolio!</p>
-          </div>
+          {currentItems.map((item, index) => (
+            <motion.div
+              key={index}
+              className="current-item"
+              initial={{ opacity: 0, y: 30 }}
+              animate={currentInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 + index * 0.2 }}
+            >
+              <FontAwesomeIcon icon={item.icon} style={{ color: item.color }} />
+              <h3>{item.title}</h3>
+              {item.text.split("\n").map((line, lineIndex) => (
+                <p key={lineIndex}>{line}</p>
+              ))}
+            </motion.div>
+          ))}
         </div>
       </motion.div>
 
       <motion.div
         ref={factsRef}
         className="fun-facts"
-        initial={{ opacity: 0 }}
-        animate={factsInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8 }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={factsInView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.3 }}
       >
         <h2>Fun Facts</h2>
         <Carousel items={funFacts} />
@@ -141,39 +180,5 @@ const AboutPage = ({ setPage }: AboutPageProps) => {
     </div>
   );
 };
-
-const funFacts = [
-  {
-    text: "Based in New Hampshire, USA",
-    icon: faMapMarkerAlt,
-    color: ColorPalette.Blue,
-  },
-  { text: "Favorite Game: Minecraft", icon: faCube, color: ColorPalette.Green },
-  {
-    text: "Love playing piano & making music",
-    icon: faMusic,
-    color: ColorPalette.Purple,
-  },
-  {
-    text: "Always have a candle lit",
-    icon: faFireFlameSimple,
-    color: ColorPalette.Orange,
-  },
-  {
-    text: "Dream of traveling to Japan",
-    icon: faPlane,
-    color: ColorPalette.Indigo,
-  },
-  {
-    text: "Favorite Show: Game of Thrones",
-    icon: faCrown,
-    color: ColorPalette.Yellow,
-  },
-];
-
-const navButtons = [
-  { text: "Gaming", page: "gaming", color: ColorPalette.Blue },
-  { text: "Interests", page: "interests", color: ColorPalette.Orange },
-];
 
 export default AboutPage;

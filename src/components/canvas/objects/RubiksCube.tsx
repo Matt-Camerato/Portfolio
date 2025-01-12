@@ -388,14 +388,8 @@ export const RubiksCube = () => {
         ease: "power2.inOut",
         onComplete: () => {
           //update cubies
-          const updatedCubies = updateCubies(meshes);
+          const updatedCubies = updateCubies(meshes, rotationAxis, clockwise);
           setCubies(updatedCubies);
-
-          //check if cube is solved
-          if (isSolved(updatedCubies) && isShuffled && randomMoves === 0) {
-            setConfettiTime(3000);
-            setIsShuffled(false);
-          }
 
           //return cubies to main group while preserving world pos
           meshes.forEach((mesh) => {
@@ -407,6 +401,17 @@ export const RubiksCube = () => {
           //remove rotation group
           objectRef.current!.remove(rotationGroup);
 
+          //reset mesh rotations
+          meshes.forEach((mesh) => {
+            mesh.quaternion.set(0, 0, 0, 1);
+          });
+
+          //check if cube is solved
+          if (isSolved(updatedCubies) && isShuffled && randomMoves === 0) {
+            setConfettiTime(3000);
+            setIsShuffled(false);
+          }
+
           resolve();
           setIsRotating(false);
         },
@@ -414,7 +419,40 @@ export const RubiksCube = () => {
     });
   };
 
-  const updateCubies = (meshes: THREE.Object3D[]): Cubie[] => {
+  const rotateFaces = (
+    faces: CubieFaces,
+    rotation: THREE.Vector3
+  ): CubieFaces => {
+    var newFaces = { ...faces };
+    var order: Face[] = [];
+
+    if (rotation.x === 1) order = ["F", "U", "B", "D"];
+    else if (rotation.x === -1) order = ["F", "D", "B", "U"];
+    else if (rotation.y === 1) order = ["F", "L", "B", "R"];
+    else if (rotation.y === -1) order = ["F", "R", "B", "L"];
+    else if (rotation.z === 1) order = ["U", "R", "D", "L"];
+    else if (rotation.z === -1) order = ["U", "L", "D", "R"];
+
+    return updateColors(newFaces, order);
+  };
+
+  const updateColors = (colors: CubieFaces, order: Face[]): CubieFaces => {
+    const newColors = { ...colors };
+    const temp = newColors[order[0]];
+    for (let i = 0; i < order.length - 1; i++) {
+      newColors[order[i]] = newColors[order[i + 1]];
+    }
+    newColors[order[order.length - 1]] = temp;
+    return newColors;
+  };
+
+  const updateCubies = (
+    meshes: THREE.Object3D[],
+    axis: THREE.Vector3,
+    clockwise: boolean
+  ): Cubie[] => {
+    const rotation = axis.multiplyScalar(clockwise ? 1 : -1);
+
     const updatedCubies = cubies.map((cubie) => {
       const mesh = meshes.find((m) => {
         const roundedMeshPos = new THREE.Vector3(
@@ -426,11 +464,9 @@ export const RubiksCube = () => {
       });
       if (!mesh) return cubie;
 
+      //get updated position and round values
       const newWorldPos = mesh.getWorldPosition(new THREE.Vector3());
       const newLocalPos = objectRef.current!.worldToLocal(newWorldPos);
-      const worldQuaternion = mesh.getWorldQuaternion(new THREE.Quaternion());
-
-      //round position values
       newLocalPos.x =
         Math.round(newLocalPos.x / (CUBIE_SIZE + GAP)) * (CUBIE_SIZE + GAP);
       newLocalPos.y =
@@ -438,10 +474,13 @@ export const RubiksCube = () => {
       newLocalPos.z =
         Math.round(newLocalPos.z / (CUBIE_SIZE + GAP)) * (CUBIE_SIZE + GAP);
 
+      //update cubie faces
+      const updatedFaces = rotateFaces(cubie.faces, rotation);
+
       return {
         position: newLocalPos,
-        faces: cubie.faces,
-        rotation: worldQuaternion,
+        faces: updatedFaces,
+        rotation: cubie.rotation,
       };
     });
 
@@ -449,67 +488,49 @@ export const RubiksCube = () => {
   };
 
   const isSolved = (cubies: Cubie[]): boolean => {
-    const getCubiesOnPlane = (
-      axis: "x" | "y" | "z",
-      value: number
-    ): Cubie[] => {
-      return cubies.filter(
-        (cubie) =>
-          Math.round(cubie.position[axis] / (CUBIE_SIZE + GAP)) === value
-      );
+    const getFaceCubies = (face: Face): Cubie[] => {
+      switch (face) {
+        case "F":
+          return cubies.filter(
+            (c) => Math.abs(c.position.z - (CUBIE_SIZE + GAP)) < 0.001
+          );
+        case "B":
+          return cubies.filter(
+            (c) => Math.abs(c.position.z + (CUBIE_SIZE + GAP)) < 0.001
+          );
+        case "L":
+          return cubies.filter(
+            (c) => Math.abs(c.position.x + (CUBIE_SIZE + GAP)) < 0.001
+          );
+        case "R":
+          return cubies.filter(
+            (c) => Math.abs(c.position.x - (CUBIE_SIZE + GAP)) < 0.001
+          );
+        case "U":
+          return cubies.filter(
+            (c) => Math.abs(c.position.y - (CUBIE_SIZE + GAP)) < 0.001
+          );
+        case "D":
+          return cubies.filter(
+            (c) => Math.abs(c.position.y + (CUBIE_SIZE + GAP)) < 0.001
+          );
+      }
     };
 
-    const planes = [
-      { axis: "x" as const, values: [-1, 1] }, // Left and Right planes
-      { axis: "y" as const, values: [-1, 1] }, // Bottom and Top planes
-      { axis: "z" as const, values: [-1, 1] }, // Back and Front planes
-    ];
-
-    return planes.every(({ axis, values }) =>
-      values.every((value) => {
-        const cubiesOnPlane = getCubiesOnPlane(axis, value);
-        return isFaceSolved(cubiesOnPlane);
-      })
-    );
-  };
-
-  const isFaceSolved = (cubiesOnPlane: Cubie[]): boolean => {
-    if (cubiesOnPlane.length !== 9) return false;
-
-    const avgNormal = new THREE.Vector3();
-    cubiesOnPlane.forEach((cubie) => {
-      if (cubie.rotation) {
-        const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(
-          cubie.rotation
-        );
-        avgNormal.add(normal);
-      }
-    });
-    avgNormal.normalize();
-
-    const threshold = 0.1;
-    const areOrientationsSimilar = cubiesOnPlane.every((cubie) => {
-      if (!cubie.rotation) return false;
-      const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(cubie.rotation);
-      return Math.abs(normal.dot(avgNormal)) > 1 - threshold;
-    });
-
-    if (!areOrientationsSimilar) return false;
-
     const faces: Face[] = ["F", "B", "L", "R", "U", "D"];
-
     for (const face of faces) {
-      const colors = cubiesOnPlane.map((cubie) => cubie.faces[face]);
-      const validColors = colors.filter(
-        (color): color is string => color !== null
+      const faceCubies = getFaceCubies(face);
+      if (faceCubies.length !== 9) return false;
+
+      const firstColor = faceCubies[0].faces[face];
+      const sameColor = faceCubies.every(
+        (cubie) => cubie.faces[face] === firstColor
       );
 
-      if (validColors.length === 9) {
-        return validColors.every((color) => color === validColors[0]);
-      }
+      if (!sameColor) return false;
     }
 
-    return false;
+    return true;
   };
 
   const generateRandomMove = (): {
@@ -585,9 +606,12 @@ export const RubiksCube = () => {
     }
   }, [randomMoves, isRotating]);
 
-  //stop shuffling when cube is not focused
+  //stop shuffling and remove confetti when cube is not focused
   useEffect(() => {
-    if (!focusConfig && randomMoves > 0) setRandomMoves(0);
+    if (!focusConfig) {
+      if (randomMoves > 0) setRandomMoves(0);
+      if (confettiTime > 0) setConfettiTime(0);
+    }
   }, [focusConfig]);
 
   useEffect(() => {

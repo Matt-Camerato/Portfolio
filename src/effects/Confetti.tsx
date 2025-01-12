@@ -48,7 +48,7 @@ const Confetti = forwardRef<THREE.Mesh, ConfettiProps>(function Confetti(
     areaHeight = 1,
     fallingHeight = 10,
     fallingSpeed = 8,
-    colors = [0x0000ff, 0xff0000, 0xffff00],
+    colors = ["#C4265E", "#8C6BC8", "#86B42B", "#E6DB74"],
     enableShadows = false,
     ...props
   },

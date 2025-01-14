@@ -29,8 +29,13 @@ export const useFocusable = ({
   actions,
 }: UseFocusableProps) => {
   const objectRef = useRef<THREE.Group>(null);
-  const { focusConfig, registerFocusable, unregisterFocusable, setFocus } =
-    useFocus();
+  const {
+    focusConfig,
+    registerFocusable,
+    unregisterFocusable,
+    setFocus,
+    cameraEnabled,
+  } = useFocus();
   const { isHovered, setIsHovered, pulseIntensity, interactionHandlers } =
     useInteraction();
 
@@ -55,7 +60,7 @@ export const useFocusable = ({
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    if (!objectRef.current) return;
+    if (!objectRef.current || !cameraEnabled) return;
     setIsHovered(false);
     setFocus(id);
   };

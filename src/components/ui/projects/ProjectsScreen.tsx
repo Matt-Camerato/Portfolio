@@ -9,6 +9,7 @@ import "../../../styles/ProjectsScreen.scss";
 
 export interface Project {
   id: string;
+  color: string;
   title: string;
   description: string;
   overview: string;
@@ -20,9 +21,10 @@ export interface Project {
 interface ProjectInfo {
   players: string;
   platform: string;
+  teamSize: string;
+  role: string;
+  duration: string;
   technologies: string;
-  teamSize?: string;
-  role?: string;
 }
 
 interface ProjectLink {
@@ -33,8 +35,8 @@ interface ProjectLink {
 export interface ProjectImage {
   src: string;
   title: string;
-  description: string;
-  tags: string[];
+  description?: string;
+  tags?: string[];
 }
 
 export function ProjectsScreen({ isActive }: { isActive: boolean }) {
@@ -67,9 +69,9 @@ export function ProjectsScreen({ isActive }: { isActive: boolean }) {
   return isActive ? (
     <Html
       transform
-      position={[0, 0.467, 0.001]}
+      position={[0, 0.48, 0.001]}
       rotation={[0, 0, 0]}
-      scale={[0.03025, 0.03025, 0.03025]}
+      scale={[0.0308, 0.0308, 0.0308]}
     >
       <div className="projects-screen">
         <img className="toolbar" src="/images/projects/toolbar.png" />

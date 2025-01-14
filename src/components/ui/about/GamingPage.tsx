@@ -490,7 +490,7 @@ const GamingPage = () => {
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 3 }}
           />
-          <p>My job, my hobby, and my passion.</p>
+          <p>My career, my hobby, and my passion.</p>
         </motion.div>
 
         <FontAwesomeIcon

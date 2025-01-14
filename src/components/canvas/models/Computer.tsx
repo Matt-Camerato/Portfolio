@@ -14,7 +14,7 @@ export function Computer() {
     new THREE.MeshStandardMaterial({
       color: ColorPalette.Pink,
       emissive: ColorPalette.Pink,
-      emissiveIntensity: 3,
+      emissiveIntensity: 15,
     })
   );
   const colorCycle = useRef(0);

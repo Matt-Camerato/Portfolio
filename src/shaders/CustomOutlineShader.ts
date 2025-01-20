@@ -47,14 +47,6 @@ export const outlineFragmentShader = /* glsl */ `
     float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
     return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
   }
-  float getLinearDepth(vec3 pos) {
-    return -(viewMatrix * vec4(pos, 1.0)).z;
-  }
-
-  float getLinearScreenDepth(sampler2D map) {
-    vec2 uv = gl_FragCoord.xy * screenSize.zw;
-    return readDepth(map,uv);
-  }
 
   float getPixelDepth(int x, int y) {
     return readDepth(depthBuffer, vUv + screenSize.zw * vec2(x, y));

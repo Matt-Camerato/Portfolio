@@ -439,10 +439,10 @@ const projects: Project[] = [
 ];
 
 const currentProject = {
-  title: "FunBoredGames.com",
+  title: "Unnamed Hand-drawn Game",
   description:
-    "A multiplayer room-based board game website I'm working on independently.",
-  technologies: "React, Three.js, Socket.io, PostgreSQL",
+    "A browser game I'm working on with a stylized look based on a game idea I had a few years ago. It will be mostly story-driven, but I'm currently working on an interesting mechanic I may use for the main focus of gameplay.",
+  technologies: "React, Three.js",
 };
 
 const ProjectsPage = ({
@@ -478,7 +478,7 @@ const ProjectsPage = ({
         <FontAwesomeIcon
           icon={faChevronDown}
           className="scroll-indicator"
-          style={{ color: ColorPalette.Orange }}
+          style={{ color: ColorPalette.Yellow }}
         />
       </motion.div>
       <motion.div

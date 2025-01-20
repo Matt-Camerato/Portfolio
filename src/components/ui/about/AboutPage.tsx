@@ -33,7 +33,7 @@ const currentItems = [
     title: "Working On",
     icon: faCode,
     color: ColorPalette.Yellow,
-    text: "FunBoredGames.com\nand this portfolio!",
+    text: "Hand-drawn browser game and this portfolio!",
   },
 ];
 

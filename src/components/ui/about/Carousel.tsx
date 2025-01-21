@@ -16,7 +16,7 @@ const Carousel = ({ items }: CarouselProps) => {
   useEffect(() => {
     const timer = setInterval(() => {
       setRotation((prev) => prev + 0.3);
-    }, 20); // Adjust speed here
+    }, 20);
 
     return () => clearInterval(timer);
   }, []);

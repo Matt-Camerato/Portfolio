@@ -87,7 +87,7 @@ export const Overlay = () => {
           quaternion={camera.quaternion}
           renderOrder={1}
           style={{
-            pointerEvents: "none", // Add this line
+            pointerEvents: "none",
           }}
         >
           <div className="overlay">

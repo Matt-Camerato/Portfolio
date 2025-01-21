@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { PerspectiveCamera, RenderTexture } from "@react-three/drei";
 import { Select } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { useFocusable } from "../../../hooks/useFocusable";
@@ -14,9 +13,10 @@ const DEFAULT_ROTATION = new THREE.Euler(-Math.PI / 2, 0, 0.3);
 export function Resume() {
   const [progress, setProgress] = useState(-1.0);
   const [dissolving, setDissolving] = useState(false);
+  const resumeMeshRef = useRef<THREE.Mesh>(null);
 
   const texture = useMemo(() => {
-    const tex = new THREE.TextureLoader().load("/textures/resume.png");
+    const tex = new THREE.TextureLoader().load("/textures/resume.svg");
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
   }, []);
@@ -35,7 +35,7 @@ export function Resume() {
       targetOffset: new THREE.Vector3(
         0,
         0,
-        window.innerWidth < 768 ? 0.6 : 0.4
+        window.innerWidth < 768 ? 0.5 : 0.38
       ),
     },
     onFocusStart: () => {
@@ -57,6 +57,14 @@ export function Resume() {
     }
   });
 
+  useEffect(() => {
+    if (!resumeMeshRef.current) return;
+
+    console.log(window.innerWidth, window.innerHeight);
+    const aspect = window.innerWidth / window.innerHeight;
+    resumeMeshRef.current.scale.set(100 * aspect, 100, 1);
+  }, [window.innerWidth, window.innerHeight]);
+
   return (
     <group
       name="resume"
@@ -70,18 +78,23 @@ export function Resume() {
           <meshToonMaterial color={ColorPalette.White} />
         </mesh>
       </Select>
-      <mesh position={[0, 0, 0.001]}>
+      <mesh position={[0, 0, 0.001]} material={dissolveMaterial}>
         <planeGeometry args={[0.4, 0.55]} />
-        <meshStandardMaterial>
+        {/* <meshStandardMaterial>
           <RenderTexture attach="map">
             <color attach="background" args={["white"]} />
-            <PerspectiveCamera makeDefault position={[0, 0, 1]} />
-            <ambientLight intensity={1} color={"#ea8dad"} />
-            <mesh material={dissolveMaterial}>
-              <planeGeometry args={[2.03, 0.95]} />
+            <OrthographicCamera makeDefault position={[0, 0, 1]} />
+
+            <mesh
+              ref={resumeMeshRef}
+              scale={100}
+              position={[0, 0, 0]}
+              material={dissolveMaterial}
+            >
+              <planeGeometry args={[20, 9.4]} />
             </mesh>
           </RenderTexture>
-        </meshStandardMaterial>
+        </meshStandardMaterial> */}
       </mesh>
     </group>
   );

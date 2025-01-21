@@ -14,7 +14,7 @@ export function Computer() {
     new THREE.MeshStandardMaterial({
       color: ColorPalette.Pink,
       emissive: ColorPalette.Pink,
-      emissiveIntensity: 15,
+      emissiveIntensity: 10,
     })
   );
   const colorCycle = useRef(0);
@@ -33,7 +33,7 @@ export function Computer() {
           "#" + child.material.color?.getHexString() || "#ffffff";
 
         if (child.material.name === "transparent") {
-          child.material = createTransparentMaterial("#111111", 0.9);
+          child.material = createTransparentMaterial("#000000", 0.7);
         } else if (child.material.name === "rgb") {
           child.material = rgbMaterial.current;
         } else {

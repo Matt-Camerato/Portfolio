@@ -24,14 +24,9 @@ export class CustomOutlineEffect extends Effect {
    * @param {Scene} scene - The main scene.
    * @param {Camera} camera - The main camera.
    * @param {Object} [options] - The options.
-   * @param {BlendFunction} [options.blendFunction=BlendFunction.SCREEN] - The blend function. Use `BlendFunction.ALPHA` for dark outlines.
-   * @param {Number} [options.edgeStrength=1.0] - The edge strength.
-   * @param {String} [options.edgeColor="black"] - The color of visible edges.
-   * @param {Number} [options.resolutionScale=0.5] - The resolution scale.
-   * @param {Number} [options.resolutionX=Resolution.AUTO_SIZE] - The horizontal resolution.
-   * @param {Number} [options.resolutionY=Resolution.AUTO_SIZE] - The vertical resolution.
-   * @param {Number} [options.width=Resolution.AUTO_SIZE] - Deprecated. Use resolutionX instead.
-   * @param {Number} [options.height=Resolution.AUTO_SIZE] - Deprecated. Use resolutionY instead.
+   * @param {String} [options.outlineColor="black"] - The color of visible edges.
+   * @param {Number} [options.width=Resolution.AUTO_SIZE] - The horizontal resolution.
+   * @param {Number} [options.height=Resolution.AUTO_SIZE] - The vertical resolution.
    */
 
   constructor(
@@ -48,24 +43,9 @@ export class CustomOutlineEffect extends Effect {
         ["sceneColorBuffer", new THREE.Uniform(null)],
         ["depthBuffer", new THREE.Uniform(null)],
         ["surfaceBuffer", new THREE.Uniform(null)],
-        ["cameraNear", new THREE.Uniform(0.001)],
-        ["cameraFar", new THREE.Uniform(1000.0)],
-        [
-          "screenSize",
-          new THREE.Uniform(
-            new THREE.Vector4(width, height, 1.0 / width, 1.0 / height)
-          ),
-        ],
         ["outlineColor", new THREE.Uniform(new THREE.Color(outlineColor))],
         ["multiplierParameters", new THREE.Uniform(new THREE.Vector2(0.7, 20))],
       ]),
-      vertexShader: /* glsl */ `
-        varying vec2 vUv;
-        void mainSupport(const in vec2 uv) {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
     });
 
     this.scene = scene;
@@ -191,10 +171,7 @@ export class CustomOutlineEffect extends Effect {
 
   update(renderer: THREE.WebGLRenderer, inputBuffer: THREE.WebGLRenderTarget) {
     //if no objects are selected, do nothing
-    if (this.selection.size === 0) {
-      //console.log("No objects selected");
-      return;
-    }
+    if (this.selection.size === 0) return;
 
     //assign surface ids ONCE when given selected objects
     if (!this.hasAssignedIds) {
@@ -222,11 +199,5 @@ export class CustomOutlineEffect extends Effect {
   setSize(width: number, height: number) {
     this.surfaceBuffer.setSize(width, height);
     this.resolution.set(width, height);
-    this.uniforms.get("screenSize")!.value = new THREE.Vector4(
-      width,
-      height,
-      1.0 / width,
-      1.0 / height
-    );
   }
 }

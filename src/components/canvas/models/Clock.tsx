@@ -32,19 +32,19 @@ export function Clock() {
     const hourHand = scene.getObjectByName("hourHand");
 
     if (secondHand) {
-      secondHand.rotation.z = -((seconds / 60) * (2 * Math.PI)); // Rotate based on current seconds
+      secondHand.rotation.z = -((seconds / 60) * (2 * Math.PI));
     }
     if (minuteHand) {
       minuteHand.rotation.z = -(
         (minutes / 60) * (2 * Math.PI) +
         (seconds / 3600) * (2 * Math.PI)
-      ); // Rotate based on current minutes and seconds
+      );
     }
     if (hourHand) {
       hourHand.rotation.z = -(
         ((hours % 12) / 12) * (2 * Math.PI) +
         (minutes / 720) * (2 * Math.PI)
-      ); // Rotate based on current hours and minutes
+      );
     }
   });
 

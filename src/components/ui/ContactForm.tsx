@@ -43,7 +43,6 @@ export const ContactForm = ({
         console.error("Failed to send email:", error);
       });
 
-    //actions!.close!();
     setFormData({ email: "", subject: "", message: "" });
   };
 
@@ -116,42 +115,3 @@ export const ContactForm = ({
     </group>
   );
 };
-
-{
-  /* <form
-  className={`contact-form ${isVisible ? "visible" : ""}`}
-  onSubmit={handleSubmit}
-  >
-  <span className="to-email">
-    To:
-    <input name="to-email" value="matt.camerato@gmail.com" disabled />
-  </span>
-  <span className="from-email">
-    From:
-    <input
-      type="email"
-      name="email"
-      placeholder="Email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-    />
-  </span>
-  <input
-    type="text"
-    name="subject"
-    placeholder="Subject"
-    value={formData.subject}
-    onChange={handleChange}
-    required
-  />
-  <textarea
-    name="message"
-    placeholder="Message"
-    value={formData.message}
-    onChange={handleChange}
-    required
-  />
-  <button type="submit">Send</button>
-</form> */
-}

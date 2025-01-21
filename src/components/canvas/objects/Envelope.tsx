@@ -127,13 +127,13 @@ export function Envelope() {
                   new Float32Array([
                     0.2,
                     0,
-                    0, // Bottom right
+                    0, //bottom right
                     -0.2,
                     0,
-                    0, // Bottom left
+                    0, //bottom left
                     0,
                     0.15,
-                    0, // Top center
+                    0, //top center
                   ])
                 }
                 count={3}
@@ -154,13 +154,13 @@ export function Envelope() {
                   new Float32Array([
                     -0.2,
                     -0.13,
-                    0, // Bottom left
+                    0, //bottom left
                     -0.2,
                     0.13,
-                    0, // Top left
+                    0, //top left
                     0,
                     0,
-                    0, // Center
+                    0, //center
                   ])
                 }
                 count={3}
@@ -178,13 +178,13 @@ export function Envelope() {
                   new Float32Array([
                     0.2,
                     0.13,
-                    0, // Top right
+                    0, //top right
                     0.2,
                     -0.13,
-                    0, // Bottom right
+                    0, //bottom right
                     0,
                     0,
-                    0, // Center
+                    0, //center
                   ])
                 }
                 count={3}
@@ -205,39 +205,28 @@ export function Envelope() {
             <mesh rotation={[Math.PI, 0, 0]}>
               <polyhedronGeometry
                 args={[
-                  // Vertices array [x,y,z, x,y,z, ...]
                   [
                     -2,
                     0,
-                    0, // Back Left
+                    0, //back left
                     2,
                     0,
-                    0, // Back center
+                    0, //back center
                     0,
                     4,
-                    0, // Back right
+                    0, //back right
                     2,
                     0,
-                    -0.001, // Back bottom right
+                    -0.001, //back bottom right
                     -2,
                     0,
-                    -0.001, // Back bottom left
+                    -0.001, //back bottom left
                     0,
                     4,
-                    -0.001, // Back top center
+                    -0.001, //back top center
                   ],
-                  // Faces array (indices to form triangles)
-                  [
-                    0,
-                    1,
-                    2, // Front face
-                    3,
-                    4,
-                    5,
-                  ],
-                  // Radius (use 1 since we defined actual coordinates)
+                  [0, 1, 2, 3, 4, 5],
                   0.2,
-                  // Detail level (0 for no subdivision)
                   0,
                 ]}
               />
@@ -246,7 +235,7 @@ export function Envelope() {
           </group>
         </group>
 
-        {/* Paper with contact form */}
+        {/* Contact form */}
         <ContactForm paperRef={paperRef} envelopeOpen={envelopeOpen} />
       </group>
     </Select>

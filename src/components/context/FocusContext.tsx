@@ -154,15 +154,9 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
     setCanInteract(false);
 
-    if (currentFocus && currentFocus.config.id !== id) {
-      //if already focused, handle transition after clearing current focus
-      handleClearFocus(config);
-    } else if (!currentFocus) {
-      //if not focused, transition to new focus
-      handleFocusTransition(config);
-    }
+    if (currentFocus && currentFocus.config.id !== id) handleClearFocus(config);
+    else if (!currentFocus) handleFocusTransition(config);
 
-    //update current focus
     if (
       config.transition.type === "CAMERA_TO_OBJECT" &&
       !currentFocus?.previousCameraPosition
@@ -178,7 +172,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
       setCurrentFocus({ ...currentFocus, config });
     }
 
-    //add object actions if they exist
     if (config.actions) {
       setActions((prev) => {
         const newActions = new Map(prev);
@@ -192,17 +185,13 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
   const handleClearFocus = (newConfig: FocusableConfig | null = null) => {
     if (!currentFocus) return;
-
     const { config } = currentFocus;
 
-    //call onFocusEnd callback and close overlay
     config.onFocusEnd?.();
     setShowOverlay(false);
 
-    //clear any object actions
     if (config.actions) {
       setActions((prev) => {
-        //if no newConfig, clear all actions
         if (!newConfig) {
           return new Map();
         }
@@ -220,7 +209,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
       newConfig?.transition.type === "CAMERA_TO_OBJECT";
 
     if (config.transition.type === "OBJECT_TO_CAMERA") {
-      //return object to default position
       gsap.to(config.object.position, {
         x: config.defaultPosition.x,
         y: config.defaultPosition.y,
@@ -244,7 +232,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         },
       });
     } else {
-      //return camera to its previous position
       if (
         currentFocus.previousCameraPosition &&
         currentFocus.previousCameraRotation
@@ -274,7 +261,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    //clear current focus
     if (!newConfig) {
       setCurrentFocus(null);
     } else if (skipAnimation) {
@@ -293,7 +279,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
       });
     }
 
-    //refresh all focus actions
     focusableObjects.forEach((config) => {
       if (config.actions) {
         config.actions.forEach((_, key) => {

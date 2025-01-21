@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { DissolveShader, DissolveColorShader } from "../shaders/DissolveShader";
+import { DissolveShader } from "../shaders/DissolveShader";
 
 const gradientMap = new THREE.TextureLoader().load("/textures/threeTone.jpg");
 gradientMap.minFilter = THREE.NearestFilter;
@@ -32,7 +32,7 @@ export function DissolveMaterial(
   const uniforms = {
     uTexture: { value: texture },
     uBorderColor: { value: new THREE.Color(borderColor) },
-    uThickness: { value: 0.02 },
+    uThickness: { value: 0.0 },
     uProgress: { value: progress },
   };
 
@@ -40,29 +40,6 @@ export function DissolveMaterial(
     uniforms,
     vertexShader: DissolveShader.vertexShader,
     fragmentShader: DissolveShader.fragmentShader,
-    toneMapped: false,
-    transparent: true,
-  });
-
-  return material;
-}
-
-export function DissolveColorMaterial(
-  color: string,
-  borderColor: string,
-  progress: number
-) {
-  const uniforms = {
-    uColor: { value: new THREE.Color(color) },
-    uBorderColor: { value: new THREE.Color(borderColor) },
-    uThickness: { value: 0.02 },
-    uProgress: { value: progress },
-  };
-
-  const material = new THREE.ShaderMaterial({
-    uniforms,
-    vertexShader: DissolveColorShader.vertexShader,
-    fragmentShader: DissolveColorShader.fragmentShader,
     toneMapped: false,
     transparent: true,
   });

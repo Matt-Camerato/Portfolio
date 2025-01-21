@@ -11,7 +11,7 @@ const createButtonVariants = () => ({
       duration: 0.4,
       repeat: Infinity,
       repeatType: "reverse" as const,
-      repeatDelay: Math.random() * 12 + 3, // Random delay between 3-15 seconds
+      repeatDelay: Math.random() * 12 + 3,
     },
   },
 });
@@ -26,7 +26,7 @@ const createDpadVariants = () => ({
       duration: 0.3,
       repeat: Infinity,
       repeatType: "reverse" as const,
-      repeatDelay: Math.random() * 12 + 3, // Random delay between 3-15 seconds
+      repeatDelay: Math.random() * 12 + 3,
     },
   },
 });

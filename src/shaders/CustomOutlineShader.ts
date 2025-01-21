@@ -5,22 +5,20 @@ export const surfaceIdMaterial = new THREE.ShaderMaterial({
     maxSurfaceId: { value: 1 },
   },
   vertexShader: /* glsl */ `
-    attribute float surfaceId;
-
-    varying vec2 v_uv;
     varying float vSurfaceId;
 
+    attribute float surfaceId;
+
     void main() {
-      v_uv = uv;
       vSurfaceId = surfaceId;
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
   fragmentShader: /* glsl */ `
-    varying vec2 v_uv;
-    varying float vSurfaceId;
     uniform float maxSurfaceId;
+
+    varying float vSurfaceId;
 
     void main() {
       float surfaceId = round(vSurfaceId) / maxSurfaceId;
@@ -34,13 +32,8 @@ export const outlineFragmentShader = /* glsl */ `
   uniform sampler2D sceneColorBuffer;
   uniform sampler2D depthBuffer;
   uniform sampler2D surfaceBuffer;
-  uniform float cameraNear;
-  uniform float cameraFar;
-  uniform vec4 screenSize;
   uniform vec3 outlineColor;
   uniform vec2 multiplierParameters;
-
-  varying vec2 vUv;
 
   float readDepth (sampler2D depthSampler, vec2 coord) {
     float fragCoordZ = texture2D(depthSampler, coord).x;
@@ -49,11 +42,11 @@ export const outlineFragmentShader = /* glsl */ `
   }
 
   float getPixelDepth(int x, int y) {
-    return readDepth(depthBuffer, vUv + screenSize.zw * vec2(x, y));
+    return readDepth(depthBuffer, vUv + texelSize * vec2(x, y));
   }
 
   vec3 getSurfaceValue(int x, int y) {
-    vec3 val = texture2D(surfaceBuffer, vUv + screenSize.zw * vec2(x, y)).rgb;
+    vec3 val = texture2D(surfaceBuffer, vUv + texelSize * vec2(x, y)).rgb;
     return val;
   }
 

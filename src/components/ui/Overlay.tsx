@@ -3,13 +3,18 @@ import { ThreeEvent, useThree } from "@react-three/fiber";
 import { Plane, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faRepeat, faLink } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTimes,
+  faRepeat,
+  faLink,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import { useFocus } from "../context/FocusContext";
 import "../../styles/Overlay.scss";
 
 export const Overlay = () => {
   const { camera } = useThree();
-  const { focusConfig, actions, showOverlay, canInteract } = useFocus();
+  const { focusConfig, actions, showOverlay, interactState } = useFocus();
   const [isDragging, setIsDragging] = useState(false);
 
   const overlayMaterial = new THREE.MeshBasicMaterial({
@@ -91,29 +96,41 @@ export const Overlay = () => {
           }}
         >
           <div className="overlay">
-            {actions.has("close") && (
-              <button
-                className="closeButton"
-                onClick={() => {
-                  if (canInteract) actions.get("close")?.();
-                }}
-              >
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-            )}
-            {actions.has("shuffle") && (
-              <button
-                className="shuffleButton"
-                onClick={actions.get("shuffle")}
-              >
-                <FontAwesomeIcon icon={faRepeat} />
-              </button>
-            )}
-            {actions.has("resume") && (
-              <button className="resumeButton" onClick={actions.get("resume")}>
-                <FontAwesomeIcon icon={faLink} />
-              </button>
-            )}
+            <div className="overlay-btns">
+              {actions.has("close") && (
+                <button
+                  className="overlay-btn"
+                  onClick={() => {
+                    if (interactState > 0) actions.get("close")?.();
+                  }}
+                  style={{ fontSize: "max(5vw, 60px)" }}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              )}
+              {interactState > 1 && (
+                <button
+                  className="overlay-btn"
+                  onClick={() => actions.get("back")?.()}
+                  style={{ fontSize: "max(4vw, 50px)" }}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                </button>
+              )}
+              {actions.has("shuffle") && (
+                <button
+                  className="overlay-btn"
+                  onClick={actions.get("shuffle")}
+                >
+                  <FontAwesomeIcon icon={faRepeat} />
+                </button>
+              )}
+              {actions.has("resume") && (
+                <button className="overlay-btn" onClick={actions.get("resume")}>
+                  <FontAwesomeIcon icon={faLink} />
+                </button>
+              )}
+            </div>
           </div>
         </Html>
         {focusConfig.transition.type === "OBJECT_TO_CAMERA" && (

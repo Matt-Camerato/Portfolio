@@ -13,7 +13,7 @@ const DEFAULT_ROTATION = new THREE.Euler(-1, 1.2, 0.95);
 
 export function Envelope() {
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
-  const { setCanInteract } = useFocus();
+  const { setInteractState } = useFocus();
 
   const envelopeRef = useRef<THREE.Group>(null);
   const flapRef = useRef<THREE.Group>(null);
@@ -26,7 +26,7 @@ export function Envelope() {
       envelopeRef.current &&
       paperRef.current
     ) {
-      setCanInteract(false);
+      setInteractState(0);
 
       gsap.to(flapRef.current.rotation, {
         x: -Math.PI,
@@ -51,7 +51,7 @@ export function Envelope() {
         ease: "power2.inOut",
         onComplete: () => {
           setEnvelopeOpen(true);
-          setCanInteract(true);
+          setInteractState(1);
         },
       });
     }

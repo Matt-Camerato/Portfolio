@@ -33,8 +33,8 @@ interface FocusContextType {
   setCamera: (camera: THREE.Camera) => void;
   cameraEnabled: boolean;
   showOverlay: boolean;
-  canInteract: boolean;
-  setCanInteract: (canInteract: boolean) => void;
+  interactState: number;
+  setInteractState: (interactState: number) => void;
   registerFocusable: (config: FocusableConfig) => void;
   unregisterFocusable: (id: string) => void;
   setFocus: (id: string) => void;
@@ -51,7 +51,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
   >(new Map());
   const [actions, setActions] = useState<Map<string, () => void>>(new Map());
   const [showOverlay, setShowOverlay] = useState(false);
-  const [canInteract, setCanInteract] = useState(true);
+  const [interactState, setInteractState] = useState<number>(0);
 
   const [currentFocus, setCurrentFocus] = useState<{
     config: FocusableConfig;
@@ -119,7 +119,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         duration: 1,
         ease: "power2.inOut",
         onComplete: () => {
-          setCanInteract(true);
+          setInteractState(1);
           config.onFocusStart?.();
           setShowOverlay(true);
         },
@@ -144,7 +144,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         duration: 1,
         ease: "power2.inOut",
         onComplete: () => {
-          setCanInteract(true);
+          setInteractState(1);
           config.onFocusStart?.();
           setShowOverlay(true);
         },
@@ -158,7 +158,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
     if (tooltipContent) hideTooltip();
 
-    setCanInteract(false);
+    setInteractState(0);
 
     if (currentFocus && currentFocus.config.id !== id) handleClearFocus(config);
     else if (!currentFocus) handleFocusTransition(config);
@@ -319,8 +319,8 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         setCamera,
         cameraEnabled,
         showOverlay,
-        canInteract,
-        setCanInteract,
+        interactState,
+        setInteractState,
         registerFocusable,
         unregisterFocusable,
         setFocus,

@@ -2,21 +2,11 @@ import { useEffect, useState } from "react";
 import { Html } from "@react-three/drei";
 import { Vector3 } from "three";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { useFocus } from "../../context/FocusContext";
+import { PlexusScreenSaver } from "../ScreenSaver";
 import ProjectsPage from "./ProjectsPage";
 import ProjectPage from "./ProjectPage";
-import { PlexusScreenSaver } from "../ScreenSaver";
 import "../../../styles/ProjectsScreen.scss";
-
-export interface Project {
-  id: string;
-  color: string;
-  title: string;
-  description: string;
-  overview: string;
-  info: ProjectInfo;
-  links: ProjectLink[];
-  images: ProjectImage[];
-}
 
 interface ProjectInfo {
   players: string;
@@ -39,7 +29,27 @@ export interface ProjectImage {
   tags?: string[];
 }
 
-export function ProjectsScreen({ isActive }: { isActive: boolean }) {
+export interface Project {
+  id: string;
+  color: string;
+  title: string;
+  description: string;
+  overview: string;
+  info: ProjectInfo;
+  links: ProjectLink[];
+  images: ProjectImage[];
+}
+
+export function ProjectsScreen({
+  isActive,
+  backClicked,
+  setBackClicked,
+}: {
+  isActive: boolean;
+  backClicked: boolean;
+  setBackClicked: (backClicked: boolean) => void;
+}) {
+  const { setInteractState } = useFocus();
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,6 +57,18 @@ export function ProjectsScreen({ isActive }: { isActive: boolean }) {
     setIsLoading(true);
     setCurrentProject(project);
   };
+
+  const handleBack = () => {
+    setIsLoading(true);
+    setCurrentProject(null);
+  };
+
+  useEffect(() => {
+    if (backClicked) {
+      handleBack();
+      setBackClicked(false);
+    }
+  }, [backClicked]);
 
   useEffect(() => {
     if (!isActive && currentProject) {
@@ -61,6 +83,9 @@ export function ProjectsScreen({ isActive }: { isActive: boolean }) {
   }, [isActive]);
 
   useEffect(() => {
+    if (currentProject) setInteractState(2);
+    else setInteractState(1);
+
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -76,13 +101,7 @@ export function ProjectsScreen({ isActive }: { isActive: boolean }) {
       <div className="projects-screen">
         <img className="toolbar" src="/images/projects/toolbar.png" />
         {currentProject && (
-          <button
-            className="back-button"
-            onClick={() => {
-              setIsLoading(true);
-              setCurrentProject(null);
-            }}
-          >
+          <button className="back-button" onClick={handleBack}>
             ←
           </button>
         )}

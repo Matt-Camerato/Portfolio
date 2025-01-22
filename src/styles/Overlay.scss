@@ -6,67 +6,32 @@
   height: 100px;
   pointer-events: none;
   user-select: none;
-}
+  z-index: 1;
 
-.closeButton {
-  position: absolute;
-  top: 3vh;
-  right: 3vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  height: 80px;
-  background: #222222;
-  color: #fff;
-  font-size: 64px;
-  border: 2px solid #000;
-  cursor: pointer;
-  pointer-events: auto;
+  .overlay-btns {
+    position: absolute;
+    top: 3vh;
+    left: 3vh;
+    width: auto;
+    display: flex;
+    gap: 16px;
 
-  &:hover {
-    background-color: #333333;
-  }
-}
+    .overlay-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: max(5vw, 60px);
+      height: max(5vw, 60px);
+      background: #222222;
+      color: #fff;
+      border: 2px solid #000;
+      font-size: max(3vw, 40px);
+      pointer-events: auto;
+      cursor: pointer;
 
-.shuffleButton {
-  position: absolute;
-  top: 3vh;
-  left: 3vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  height: 80px;
-  background: #222222;
-  color: #fff;
-  font-size: 48px;
-  border: 2px solid #000;
-  cursor: pointer;
-  pointer-events: auto;
-
-  &:hover {
-    background-color: #333333;
-  }
-}
-
-.resumeButton {
-  position: absolute;
-  top: 3vh;
-  left: 3vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80px;
-  height: 80px;
-  background: #222222;
-  color: #fff;
-  font-size: 48px;
-  border: 2px solid #000;
-  cursor: pointer;
-  pointer-events: auto;
-
-  &:hover {
-    background-color: #333333;
+      &:hover {
+        background-color: #333333;
+      }
+    }
   }
 }

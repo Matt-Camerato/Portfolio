@@ -12,6 +12,7 @@ const DEFAULT_ROTATION = new THREE.Euler(0, 0.44, 0);
 export function Monitor2() {
   const { scene } = useGLTF("/models/monitor2.glb");
   const [isScreenActive, setScreenActive] = useState(false);
+  const [backClicked, setBackClicked] = useState(false);
 
   const { isHovered, pulseIntensity, focusableProps } = useFocusable({
     id: "monitor2",
@@ -28,7 +29,10 @@ export function Monitor2() {
     },
     onFocusStart: () => setScreenActive(true),
     onFocusEnd: () => setScreenActive(false),
-    actions: new Map([["focus-monitor2", () => null]]),
+    actions: new Map([
+      ["focus-monitor2", () => null],
+      ["back", () => setBackClicked(true)],
+    ]),
   });
 
   useEffect(() => {
@@ -52,7 +56,11 @@ export function Monitor2() {
         {...focusableProps}
       >
         <primitive object={scene} />
-        <AboutScreen isActive={isScreenActive} />
+        <AboutScreen
+          isActive={isScreenActive}
+          backClicked={backClicked}
+          setBackClicked={setBackClicked}
+        />
       </group>
     </Select>
   );

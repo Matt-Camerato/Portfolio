@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
 import { Html } from "@react-three/drei";
 import { Vector3 } from "three";
+import { useFocus } from "../../context/FocusContext";
 import { MatrixScreenSaver } from "../ScreenSaver";
-import "../../../styles/AboutScreen.scss";
 import AboutPage from "./AboutPage";
 import GamingPage from "./GamingPage";
 import InterestsPage from "./InterestsPage";
+import "../../../styles/AboutScreen.scss";
 
-export function AboutScreen({ isActive }: { isActive: boolean }) {
+export function AboutScreen({
+  isActive,
+  backClicked,
+  setBackClicked,
+}: {
+  isActive: boolean;
+  backClicked: boolean;
+  setBackClicked: (backClicked: boolean) => void;
+}) {
+  const { setInteractState } = useFocus();
   const [currentPage, setCurrentPage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,6 +37,18 @@ export function AboutScreen({ isActive }: { isActive: boolean }) {
     setCurrentPage(page);
   };
 
+  const handleBack = () => {
+    setIsLoading(true);
+    setCurrentPage("");
+  };
+
+  useEffect(() => {
+    if (backClicked) {
+      handleBack();
+      setBackClicked(false);
+    }
+  }, [backClicked]);
+
   useEffect(() => {
     if (!isActive && currentPage) {
       setCurrentPage("");
@@ -40,6 +62,9 @@ export function AboutScreen({ isActive }: { isActive: boolean }) {
   }, [isActive]);
 
   useEffect(() => {
+    if (currentPage === "") setInteractState(1);
+    else setInteractState(2);
+
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -56,13 +81,7 @@ export function AboutScreen({ isActive }: { isActive: boolean }) {
       <div className="about-screen">
         <img className="toolbar" src="/images/about/toolbar.png" />
         {currentPage !== "" && (
-          <button
-            className="back-button"
-            onClick={() => {
-              setIsLoading(true);
-              setCurrentPage("");
-            }}
-          >
+          <button className="back-button" onClick={handleBack}>
             ←
           </button>
         )}

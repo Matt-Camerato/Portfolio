@@ -3,6 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { FocusProvider } from "./components/context/FocusContext";
 import { LoadingScreen } from "./components/ui/LoadingScreen";
 import { Navbar } from "./components/ui/Navbar";
+import { Tooltip } from "./components/ui/Tooltip";
 import { Scene } from "./components/canvas/Scene";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
 
       <FocusProvider>
         <Navbar />
+        <Tooltip />
         <Scene />
       </FocusProvider>
 

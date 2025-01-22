@@ -7,7 +7,8 @@ import { useFocus } from "../../context/FocusContext";
 
 export function GithubFrame() {
   const { scene } = useGLTF("/models/githubFrame.glb");
-  const { isHovered, pulseIntensity, interactionHandlers } = useInteraction();
+  const { isHovered, pulseIntensity, interactionHandlers } =
+    useInteraction("Github");
   const { focusConfig } = useFocus();
 
   useEffect(() => {

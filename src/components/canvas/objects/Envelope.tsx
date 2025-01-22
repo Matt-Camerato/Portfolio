@@ -89,6 +89,7 @@ export function Envelope() {
 
   const { isHovered, pulseIntensity, focusableProps } = useFocusable({
     id: "envelope",
+    tooltipContent: "Contact",
     defaultPosition: DEFAULT_POSITION,
     defaultRotation: DEFAULT_ROTATION,
     transition: {

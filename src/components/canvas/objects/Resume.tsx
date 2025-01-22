@@ -28,6 +28,7 @@ export function Resume() {
 
   const { isHovered, pulseIntensity, focusableProps } = useFocusable({
     id: "resume",
+    tooltipContent: "Resume",
     defaultPosition: DEFAULT_POSITION,
     defaultRotation: DEFAULT_ROTATION,
     transition: {

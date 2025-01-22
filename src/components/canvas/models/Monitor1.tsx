@@ -15,6 +15,7 @@ export function Monitor1() {
 
   const { isHovered, pulseIntensity, focusableProps } = useFocusable({
     id: "monitor1",
+    tooltipContent: "Projects",
     defaultPosition: DEFAULT_POSITION,
     defaultRotation: DEFAULT_ROTATION,
     transition: {

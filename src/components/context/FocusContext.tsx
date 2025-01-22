@@ -38,6 +38,9 @@ interface FocusContextType {
   registerFocusable: (config: FocusableConfig) => void;
   unregisterFocusable: (id: string) => void;
   setFocus: (id: string) => void;
+  tooltipContent: string | null;
+  showTooltip: (content: string) => void;
+  hideTooltip: () => void;
 }
 
 const FocusContext = createContext<FocusContextType | undefined>(undefined);
@@ -58,6 +61,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
   const [camera, setCamera] = useState<THREE.Camera | null>(null);
   const [cameraEnabled, setCameraEnabled] = useState(true);
+  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
 
   const registerFocusable = (config: FocusableConfig) => {
     setFocusableObjects((prev) => {
@@ -151,6 +155,8 @@ export function FocusProvider({ children }: { children: ReactNode }) {
   const setFocus = (id: string) => {
     const config = focusableObjects.get(id);
     if (!config) return;
+
+    if (tooltipContent) hideTooltip();
 
     setCanInteract(false);
 
@@ -270,6 +276,16 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
   const clearFocus = () => handleClearFocus();
 
+  const showTooltip = (content: string) => {
+    if (currentFocus) return;
+
+    setTooltipContent(content);
+  };
+
+  const hideTooltip = () => {
+    setTooltipContent(null);
+  };
+
   useEffect(() => {
     if (currentFocus) {
       setActions((prev) => {
@@ -308,6 +324,9 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         registerFocusable,
         unregisterFocusable,
         setFocus,
+        tooltipContent,
+        showTooltip,
+        hideTooltip,
       }}
     >
       {children}

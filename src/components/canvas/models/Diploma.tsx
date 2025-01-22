@@ -28,6 +28,7 @@ export function Diploma() {
 
   const { isHovered, pulseIntensity, focusableProps } = useFocusable({
     id: "diploma",
+    tooltipContent: "Diploma",
     defaultPosition: DEFAULT_POSITION,
     defaultRotation: DEFAULT_ROTATION,
     transition: {

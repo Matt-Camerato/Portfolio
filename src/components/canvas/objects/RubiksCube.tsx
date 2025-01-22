@@ -54,6 +54,7 @@ export const RubiksCube = () => {
     focusableProps,
   } = useFocusable({
     id: "rubiksCube",
+    tooltipContent: "Rubiks Cube",
     defaultPosition: DEFAULT_POSITION,
     defaultRotation: DEFAULT_ROTATION,
     transition: {

@@ -7,7 +7,8 @@ import { useFocus } from "../../context/FocusContext";
 
 export function ItchFrame() {
   const { scene } = useGLTF("/models/itchFrame.glb");
-  const { isHovered, pulseIntensity, interactionHandlers } = useInteraction();
+  const { isHovered, pulseIntensity, interactionHandlers } =
+    useInteraction("Itch.io");
   const { focusConfig } = useFocus();
 
   useEffect(() => {

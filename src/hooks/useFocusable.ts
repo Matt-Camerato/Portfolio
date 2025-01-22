@@ -6,6 +6,7 @@ import { useInteraction } from "./useInteraction";
 
 interface UseFocusableProps {
   id: string;
+  tooltipContent: string;
   defaultPosition: THREE.Vector3;
   defaultRotation: THREE.Euler;
   transition: {
@@ -20,6 +21,7 @@ interface UseFocusableProps {
 
 export const useFocusable = ({
   id,
+  tooltipContent,
   defaultPosition,
   defaultRotation,
   transition,
@@ -37,7 +39,7 @@ export const useFocusable = ({
     cameraEnabled,
   } = useFocus();
   const { isHovered, setIsHovered, pulseIntensity, interactionHandlers } =
-    useInteraction();
+    useInteraction(tooltipContent);
 
   useEffect(() => {
     if (!objectRef.current) return;

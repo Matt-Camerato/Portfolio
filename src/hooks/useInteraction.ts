@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 import { useFocus } from "../components/context/FocusContext";
 import { useFrame } from "@react-three/fiber";
 
-export const useInteraction = () => {
-  const { focusConfig } = useFocus();
+export const useInteraction = (tooltipContent: string) => {
+  const { focusConfig, showTooltip, hideTooltip } = useFocus();
 
   const pulseTimerRef = useRef(1000);
   const pulseIntervalRef = useRef(window.innerWidth < 768 ? 1800 : 3600);
@@ -11,8 +11,15 @@ export const useInteraction = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPulsing, setIsPulsing] = useState(false);
 
-  const handlePointerOver = () => setIsHovered(true);
-  const handlePointerOut = () => setIsHovered(false);
+  const handlePointerOver = () => {
+    setIsHovered(true);
+    showTooltip(tooltipContent);
+  };
+
+  const handlePointerOut = () => {
+    setIsHovered(false);
+    hideTooltip();
+  };
 
   //pulse all interactable objects every pulse interval
   useFrame(() => {

@@ -7,7 +7,8 @@ import { useFocus } from "../../context/FocusContext";
 
 export function LinkedInFrame() {
   const { scene } = useGLTF("/models/linkedInFrame.glb");
-  const { isHovered, pulseIntensity, interactionHandlers } = useInteraction();
+  const { isHovered, pulseIntensity, interactionHandlers } =
+    useInteraction("LinkedIn");
   const { focusConfig } = useFocus();
 
   useEffect(() => {

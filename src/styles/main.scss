@@ -87,3 +87,40 @@ body {
     }
   }
 }
+
+.tooltip {
+  position: fixed;
+  max-width: 200px;
+  white-space: nowrap;
+  height: 40px;
+  z-index: 50;
+  pointer-events: none;
+  user-select: none;
+
+  .tooltip-content {
+    background-color: #222222;
+    color: white;
+    font-size: 14px;
+    text-shadow: -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
+      2px 2px 0 #000000;
+    transform: translateX(-50%) translateY(-100%);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 2px solid #000000;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      background-color: #222222;
+
+      width: 10px;
+      height: 10px;
+      border: 2px solid #000000;
+      border-left: none;
+      border-top: none;
+    }
+  }
+}

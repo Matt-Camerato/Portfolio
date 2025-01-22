@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import {
   faSteamSymbol,
   faItchIo,
@@ -11,6 +9,7 @@ import {
   faApple,
 } from "@fortawesome/free-brands-svg-icons";
 import { ColorPalette } from "../../../utils/colors";
+import ScrollIndicator from "../ScrollIndicator";
 import { Project } from "./ProjectsScreen";
 
 const projects: Project[] = [
@@ -462,7 +461,7 @@ const ProjectsPage = ({
         className="current"
         initial={{ opacity: 0, scale: 0.6, y: 100 }}
         animate={currentInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-        transition={{ duration: 1, type: "spring", bounce: 0.5 }}
+        transition={{ duration: 1.4, type: "spring", bounce: 0.5 }}
       >
         <h1>Currently working on...</h1>
 
@@ -475,12 +474,9 @@ const ProjectsPage = ({
           </div>
         </div>
 
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className="scroll-indicator"
-          style={{ color: ColorPalette.Yellow }}
-        />
+        <ScrollIndicator color={ColorPalette.Yellow} scrollAmount={1200} />
       </motion.div>
+
       <motion.div
         ref={pastRef}
         className="past-work"

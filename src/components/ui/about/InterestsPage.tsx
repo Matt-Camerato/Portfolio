@@ -4,7 +4,6 @@ import { useInView } from "react-intersection-observer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCube,
-  faChevronDown,
   faBook,
   faDumbbell,
   faUtensils,
@@ -12,6 +11,7 @@ import {
   faMusic,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPalette } from "../../../utils/colors";
+import ScrollIndicator from "../ScrollIndicator";
 import BookShelf from "./BookShelf";
 
 const instruments = [
@@ -291,11 +291,7 @@ const InterestsPage = () => {
           ))}
         </motion.div>
 
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className="scroll-indicator"
-          style={{ color: ColorPalette.Yellow }}
-        />
+        <ScrollIndicator color={ColorPalette.Yellow} scrollAmount={1000} />
       </motion.div>
 
       {/* Music Section */}

@@ -9,11 +9,11 @@ import {
   faCode,
   faFireFlameSimple,
   faCrown,
-  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ColorPalette } from "../../../utils/colors";
+import ScrollIndicator from "../ScrollIndicator";
 import Carousel from "./Carousel";
 
 const currentItems = [
@@ -112,11 +112,7 @@ const AboutPage = ({ setPage }: AboutPageProps) => {
           usually find me watching YouTube, gaming, or spending time with my
           family.
         </p>
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className="scroll-indicator"
-          style={{ color: ColorPalette.Yellow }}
-        />
+        <ScrollIndicator color={ColorPalette.Yellow} />
       </motion.div>
 
       <motion.div ref={currentRef} className="current-section">

@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronDown,
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPalette } from "../../../utils/colors";
+import ScrollIndicator from "../ScrollIndicator";
 import AnimatedController from "./AnimatedController";
 
 interface Game {
@@ -491,13 +491,8 @@ const GamingPage = () => {
             transition={{ duration: 0.8, delay: 3 }}
           />
           <p>My career, my hobby, and my passion.</p>
+          <ScrollIndicator color={ColorPalette.Yellow} scrollAmount={1000} />
         </motion.div>
-
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          className="scroll-indicator"
-          style={{ color: ColorPalette.Yellow }}
-        />
       </motion.div>
 
       <motion.div

@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import ScrollIndicator from "../ScrollIndicator";
 import { Project } from "./ProjectsScreen";
 import ProjectOverview from "./ProjectOverview";
 import ProjectImages from "./ProjectImages";
@@ -58,17 +57,7 @@ const ProjectPage = ({ currentProject }: { currentProject: Project }) => {
           />
         </div>
       )}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
-      >
-        <FontAwesomeIcon
-          className="scroll-indicator"
-          icon={faChevronDown}
-          style={{ color: currentProject.color }}
-        />
-      </motion.div>
+      <ScrollIndicator color={currentProject.color} size="large" bottom={100} />
       <div className="content">
         <ProjectOverview currentProject={currentProject} />
         <ProjectImages currentProject={currentProject} />

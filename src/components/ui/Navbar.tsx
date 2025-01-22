@@ -3,7 +3,7 @@ import { useFocus } from "../context/FocusContext";
 import "../../styles/Navbar.scss";
 
 export function Navbar() {
-  const { actions, canInteract } = useFocus();
+  const { actions, interactState } = useFocus();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -28,7 +28,7 @@ export function Navbar() {
             <div
               onClick={() => {
                 //check if actions map
-                if (actions.has("focus-monitor2") && canInteract) {
+                if (actions.has("focus-monitor2") && interactState > 0) {
                   setIsMenuOpen(false);
                   actions.get("focus-monitor2")!();
                 }
@@ -38,7 +38,7 @@ export function Navbar() {
             </div>
             <div
               onClick={() => {
-                if (actions.has("focus-monitor1") && canInteract) {
+                if (actions.has("focus-monitor1") && interactState > 0) {
                   setIsMenuOpen(false);
                   actions.get("focus-monitor1")!();
                 }
@@ -48,7 +48,7 @@ export function Navbar() {
             </div>
             <div
               onClick={() => {
-                if (actions.has("focus-envelope") && canInteract) {
+                if (actions.has("focus-envelope") && interactState > 0) {
                   setIsMenuOpen(false);
                   actions.get("focus-envelope")!();
                 }

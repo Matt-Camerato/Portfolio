@@ -51,6 +51,7 @@ const ProjectOverview = ({ currentProject }: { currentProject: Project }) => {
         <div className="links">
           {currentProject.links.map((link, index) => (
             <motion.div
+              key={`${link.url}-${index}`}
               initial={{ opacity: 0, y: 50 }}
               animate={overviewInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 1 + index * 0.2 }}

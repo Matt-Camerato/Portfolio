@@ -198,14 +198,19 @@ export function FocusProvider({ children }: { children: ReactNode }) {
 
     if (config.actions) {
       setActions((prev) => {
-        if (!newConfig) {
-          return new Map();
-        }
-
-        const newActions = new Map(prev);
-        config.actions!.forEach((_, key) => {
-          newActions.delete(key);
+        //only keep "focus" actions
+        const newActions = new Map();
+        prev.forEach((value, key) => {
+          if (key.includes("focus")) {
+            newActions.set(key, value);
+          }
         });
+
+        if (newConfig) {
+          config.actions!.forEach((_, key) => {
+            if (!key.includes("focus")) newActions.delete(key);
+          });
+        }
         return newActions;
       });
     }
@@ -277,8 +282,6 @@ export function FocusProvider({ children }: { children: ReactNode }) {
   const clearFocus = () => handleClearFocus();
 
   const showTooltip = (content: string) => {
-    if (currentFocus) return;
-
     setTooltipContent(content);
   };
 

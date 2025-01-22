@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFocus } from "../components/context/FocusContext";
 import { useFrame } from "@react-three/fiber";
 
@@ -20,6 +20,13 @@ export const useInteraction = (tooltipContent: string) => {
     setIsHovered(false);
     hideTooltip();
   };
+
+  useEffect(() => {
+    if (focusConfig) {
+      setIsHovered(false);
+      hideTooltip();
+    }
+  }, [focusConfig]);
 
   //pulse all interactable objects every pulse interval
   useFrame(() => {

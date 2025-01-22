@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { DissolveShader } from "../shaders/DissolveShader";
 
-const gradientMap = new THREE.TextureLoader().load("/textures/threeTone.jpg");
+const gradientMap = new THREE.TextureLoader().load("/images/threeTone.jpg");
 gradientMap.minFilter = THREE.NearestFilter;
 gradientMap.magFilter = THREE.NearestFilter;
 

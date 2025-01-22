@@ -23,6 +23,10 @@
   border: 2px solid #000;
   cursor: pointer;
   pointer-events: auto;
+
+  &:hover {
+    background-color: #333333;
+  }
 }
 
 .shuffleButton {
@@ -40,4 +44,29 @@
   border: 2px solid #000;
   cursor: pointer;
   pointer-events: auto;
+
+  &:hover {
+    background-color: #333333;
+  }
+}
+
+.resumeButton {
+  position: absolute;
+  top: 3vh;
+  left: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  background: #222222;
+  color: #fff;
+  font-size: 48px;
+  border: 2px solid #000;
+  cursor: pointer;
+  pointer-events: auto;
+
+  &:hover {
+    background-color: #333333;
+  }
 }

@@ -16,7 +16,7 @@ export function Diploma() {
   const [dissolving, setDissolving] = useState(false);
 
   const texture = useMemo(() => {
-    const tex = new THREE.TextureLoader().load("/textures/diploma.png");
+    const tex = new THREE.TextureLoader().load("/images/diploma.png");
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
   }, []);

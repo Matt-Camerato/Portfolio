@@ -16,7 +16,7 @@ export function Resume() {
   const resumeMeshRef = useRef<THREE.Mesh>(null);
 
   const texture = useMemo(() => {
-    const tex = new THREE.TextureLoader().load("/textures/resume.svg");
+    const tex = new THREE.TextureLoader().load("/images/resume.svg");
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
   }, []);
@@ -44,6 +44,9 @@ export function Resume() {
       setDissolving(true);
     },
     onFocusEnd: () => setDissolving(false),
+    actions: new Map([
+      ["resume", () => window.open("/resume.pdf", "_blank")],
+    ]),
   });
 
   useFrame(() => {
@@ -81,21 +84,6 @@ export function Resume() {
       </Select>
       <mesh position={[0, 0, 0.001]} material={dissolveMaterial}>
         <planeGeometry args={[0.4, 0.55]} />
-        {/* <meshStandardMaterial>
-          <RenderTexture attach="map">
-            <color attach="background" args={["white"]} />
-            <OrthographicCamera makeDefault position={[0, 0, 1]} />
-
-            <mesh
-              ref={resumeMeshRef}
-              scale={100}
-              position={[0, 0, 0]}
-              material={dissolveMaterial}
-            >
-              <planeGeometry args={[20, 9.4]} />
-            </mesh>
-          </RenderTexture>
-        </meshStandardMaterial> */}
       </mesh>
     </group>
   );

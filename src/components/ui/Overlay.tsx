@@ -3,7 +3,7 @@ import { ThreeEvent, useThree } from "@react-three/fiber";
 import { Plane, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faRepeat, faLink } from "@fortawesome/free-solid-svg-icons";
 import { useFocus } from "../context/FocusContext";
 import "../../styles/Overlay.scss";
 
@@ -107,6 +107,11 @@ export const Overlay = () => {
                 onClick={actions.get("shuffle")}
               >
                 <FontAwesomeIcon icon={faRepeat} />
+              </button>
+            )}
+            {actions.has("resume") && (
+              <button className="resumeButton" onClick={actions.get("resume")}>
+                <FontAwesomeIcon icon={faLink} />
               </button>
             )}
           </div>

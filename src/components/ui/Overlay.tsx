@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ThreeEvent, useThree } from "@react-three/fiber";
 import { Plane, Html } from "@react-three/drei";
 import * as THREE from "three";
+import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTimes,
@@ -23,6 +24,20 @@ export const Overlay = () => {
     opacity: 0.6,
     depthWrite: false,
   });
+
+  const getOverlayWidth = () => {
+    if (!focusConfig) return window.innerWidth * 0.5;
+
+    switch (focusConfig.id) {
+      case "monitor1":
+      case "monitor2":
+        return Math.min(window.innerWidth * 0.85, 1450);
+      case "diploma":
+        return Math.min(window.innerWidth * 0.9, 1200);
+      default:
+        return Math.max(window.innerWidth * 0.5, 400);
+    }
+  };
 
   const getOverlayPosition = (distance: number) => {
     const planeVector = new THREE.Vector3(0, 0, -distance);
@@ -96,9 +111,17 @@ export const Overlay = () => {
           }}
         >
           <div className="overlay">
-            <div className="overlay-btns">
+            <div className="overlay-btns" style={{ width: getOverlayWidth() }}>
               {actions.has("close") && (
-                <button
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: [1, 0.5, 1], scale: [1, 0.9, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeInOut",
+                    repeat: 3,
+                    repeatType: "reverse",
+                  }}
                   className="overlay-btn"
                   onClick={() => {
                     if (interactState > 0) actions.get("close")?.();
@@ -106,29 +129,56 @@ export const Overlay = () => {
                   style={{ fontSize: "max(5vw, 60px)" }}
                 >
                   <FontAwesomeIcon icon={faTimes} />
-                </button>
+                </motion.button>
               )}
               {interactState > 1 && (
-                <button
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: [1, 0.5, 1], scale: [1, 0.9, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeInOut",
+                    repeat: 3,
+                    repeatType: "reverse",
+                  }}
                   className="overlay-btn"
                   onClick={() => actions.get("back")?.()}
                   style={{ fontSize: "max(4vw, 50px)" }}
                 >
                   <FontAwesomeIcon icon={faArrowLeft} />
-                </button>
+                </motion.button>
               )}
               {actions.has("shuffle") && (
-                <button
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: [1, 0.5, 1], scale: [1, 0.9, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeInOut",
+                    repeat: 3,
+                    repeatType: "reverse",
+                  }}
                   className="overlay-btn"
                   onClick={actions.get("shuffle")}
                 >
                   <FontAwesomeIcon icon={faRepeat} />
-                </button>
+                </motion.button>
               )}
               {actions.has("resume") && (
-                <button className="overlay-btn" onClick={actions.get("resume")}>
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: [1, 0.5, 1], scale: [1, 0.9, 1] }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeInOut",
+                    repeat: 3,
+                    repeatType: "reverse",
+                  }}
+                  className="overlay-btn"
+                  onClick={actions.get("resume")}
+                >
                   <FontAwesomeIcon icon={faLink} />
-                </button>
+                </motion.button>
               )}
             </div>
           </div>

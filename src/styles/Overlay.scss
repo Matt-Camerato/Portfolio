@@ -7,14 +7,15 @@
   pointer-events: none;
   user-select: none;
   z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .overlay-btns {
-    position: absolute;
-    top: 3vh;
-    left: 3vh;
-    width: auto;
+    margin-top: 50px;
     display: flex;
-    gap: 16px;
+    justify-content: space-between;
+    flex-direction: row-reverse;
 
     .overlay-btn {
       display: flex;

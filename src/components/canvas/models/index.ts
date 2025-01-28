@@ -9,3 +9,5 @@ export * from "./LinkedInFrame";
 export * from "./Monitor1";
 export * from "./Monitor2";
 export * from "./Workspace";
+export * from "./XFrame";
+export * from "./YoutubeFrame";

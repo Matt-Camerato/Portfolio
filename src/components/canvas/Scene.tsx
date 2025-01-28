@@ -16,6 +16,8 @@ import {
   Monitor1,
   Monitor2,
   Workspace,
+  XFrame,
+  YoutubeFrame,
 } from "./models";
 import { Envelope, Resume, RubiksCube } from "./objects";
 
@@ -62,6 +64,8 @@ export function Scene() {
           <Monitor2 />
           <Resume />
           <RubiksCube />
+          <XFrame />
+          <YoutubeFrame />
         </Selection>
       </Canvas>
     </div>

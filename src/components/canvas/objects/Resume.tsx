@@ -44,7 +44,7 @@ export function Resume() {
       setDissolving(true);
     },
     onFocusEnd: () => setDissolving(false),
-    actions: new Map([["resume", () => window.open("/Resume.pdf", "_blank")]]),
+    actions: new Map([["resume", () => window.open("/resume.pdf", "_blank")]]),
   });
 
   useFrame(() => {
